@@ -45,7 +45,7 @@ bot.on('ready', async () => {
     // Set bot status
     bot.editStatus("online");
     // Send update to console
-    console.log(wipe(`${chalk.bold.blue('Discord')}: [` + moment().format('MM/DD/YY-HH:mm:ss') + `] Bot is now connected to Discord API`));
+    console.log(wipe(`${chalk.bold.blue('API Discord')}: [` + moment().format('MM/DD/YY-HH:mm:ss') + `] Bot is now connected to Discord API`));
     // Send connected bot message
     if (send_startup_msg) {
         await bot.createMessage(config_store.get('discord_bot_channel'), ":white_check_mark: **RAkerman Fallback v" + pkg.version + ": Service Online**");
@@ -63,19 +63,27 @@ bot.on('messageCreate', async (msg) => {
         if (parts[0] === "raf") {
             if (parts[1] === "alert") { // Update alert data
                 // Validate command input
-                if ((parts[2] === "maintenance" || parts[2] === "interrupt") && moment.unix(parseInt(parts[3])).isAfter(moment().subtract(6, "hours")) && parseInt(parts[4]) > -1) {
+                if ((parts[2] === "maintain" || parts[2] === "interrupt") && moment.unix(parseInt(parts[3])).isAfter(moment().subtract(6, "hours")) && parseInt(parts[4]) > -1) {
                     // Update options
                     alert_store.set("tag", nanoid(6));
                     alert_store.set("type", parts[2]);
                     alert_store.set("start", moment.unix(parseInt(parts[3])));
                     alert_store.set("end", moment.unix(parseInt(parts[3])).add(parseInt(parts[4]), "hours"));
                     await bot.createMessage(config_store.get('discord_bot_channel'), ":white_check_mark: **RAkerman Fallback v" + pkg.version + ": Updated Alert**\n`" + parts[2] + "` `" + moment(alert_store.get("start")).format("MM/DD/YY-HH:mm") + "` to `" + moment(alert_store.get("end")).format("MM/DD/YY-HH:mm") + "`");
-                    console.log(wipe(`${chalk.bold.blue('Discord')}: [` + moment().format('MM/DD/YY-HH:mm:ss') + `] Updated alert status (` + parts[2] + `, ` + moment(alert_store.get("start")).format("MM/DD/YY-HH:mm") + ` to ` + moment(alert_store.get("end")).format("MM/DD/YY-HH:mm") + `)`));
+                    console.log(wipe(`${chalk.bold.blue('API Discord')}: [` + moment().format('MM/DD/YY-HH:mm:ss') + `] Updated alert status (` + parts[2] + `, ` + moment(alert_store.get("start")).format("MM/DD/YY-HH:mm") + ` to ` + moment(alert_store.get("end")).format("MM/DD/YY-HH:mm") + `)`));
+                    return;
+                }
+            } else if (parts[1] === "maintain") { // Update alert data
+                // Validate command input
+                if (status.update_service_maintain(parts[2], parts[3] === "true")) {
+                    // Update options
+                    await bot.createMessage(config_store.get('discord_bot_channel'), ":white_check_mark: **RAkerman Fallback v" + pkg.version + ": Updated Maintain Status**\n`" + parts[2] + "` `" + (parts[3] === "true") + "`");
+                    console.log(wipe(`${chalk.bold.blue('API Discord')}: [` + moment().format('MM/DD/YY-HH:mm:ss') + `] Updated maintain status (` + parts[2] + `, ` + (parts[3] === "true") + `)`));
                     return;
                 }
             }
-            await bot.createMessage(config_store.get('discord_bot_channel'), ":grey_question: **RAkerman Fallback v" + pkg.version + ": Invalid Command**\n> raf alert <desc (maintenance, interrupt)> <unix_timestamp> <duration_in_hrs>");
-            console.log(wipe(`${chalk.bold.blue('Discord')}: [` + moment().format('MM/DD/YY-HH:mm:ss') + `] User sent invalid command`));
+            await bot.createMessage(config_store.get('discord_bot_channel'), ":grey_question: **RAkerman Fallback v" + pkg.version + ": Invalid Command**\n> raf alert <desc (maintain, interrupt)> <unix_timestamp> <duration_in_hrs>");
+            console.log(wipe(`${chalk.bold.blue('API Discord')}: [` + moment().format('MM/DD/YY-HH:mm:ss') + `] User sent invalid command`));
         }
         // Else, do nothing and ignore message
     }
@@ -97,29 +105,46 @@ app.get('/api/status/all', async function (req, res) {
     // Return view for home page
     res.header("Access-Control-Allow-Origin", "*"); // Allow anyone to request this site, cookies are not logged
     res.send(status.get_payload(bot, config_store));
-    console.log(wipe(`${chalk.bold.magenta('Fastify')}: [` + moment().format('MM/DD/YY-HH:mm:ss') + `] GET /api/status/all`));
+    console.log(wipe(`${chalk.bold.magenta('API Fastify')}: [` + moment().format('MM/DD/YY-HH:mm:ss') + `] GET /api/status/all`));
 })
 
 // RAF Alert
 app.get('/api/alert', async function (req, res) {
-    // Return alert payload
-    let payload = {
-        tag: "",
-        type: "",
-        start: "",
-        end: ""
-    }
+    // Construct payload base case
+    let payload = "";
+    // Check if we should send payload
     if (moment(alert_store.get("start")).diff(moment(), "hours") < 12 && moment().isBefore(alert_store.get("end"))) {
-        payload = {
-            tag: alert_store.get("tag"),
-            type: alert_store.get("type"),
-            start: alert_store.get("start"),
-            end: alert_store.get("end")
-        }
+        payload = "let raf_alert_tag = \"" + alert_store.get("tag") + "\";\n" +
+            "window.onload = function() {\n" +
+            "  let raf_sd = new Date(\"" + alert_store.get("start") + "\");\n" +
+            "  let raf_ed = new Date(\"" + alert_store.get("end") + "\");\n" +
+            "  function formatAMPM(date) {\n" +
+            "    let hours = date.getHours();\n" +
+            "    let ampm = hours >= 12 ? 'pm' : 'am';\n" +
+            "    hours = hours % 12;\n" +
+            "    hours = hours ? hours : 12;\n" +
+            "    return hours + ampm;\n" +
+            "  }\n" +
+            "  (function () {\n" +
+            "    if (!window.localStorage.getItem('raf_alert_' + raf_alert_tag)) {\n" +
+            "      document.getElementById(\"raf_alert_title\").innerHTML = \"" + (alert_store.get("type") === "interrupt" ? "Service Interruption" : "Site Maintenance") + "\";\n" +
+            "      document.getElementById(\"raf_alert_desc\").innerHTML = \"" + (alert_store.get("type") === "interrupt" ? "Expect minor interruptions on select services" : "Expect extended downtime on all services") + "\";\n" +
+            "      document.getElementById(\"raf_alert_time\").innerHTML = raf_sd.toLocaleString('en-us', { month: 'short' }) + \" \" + raf_sd.getDay() + (raf_sd.getDay() > 0 ? ['th', 'st', 'nd', 'rd'][(raf_sd.getDay() > 3 && raf_sd.getDay() < 21) || raf_sd.getDay() % 10 > 3 ? 0 : raf_sd.getDay() % 10] : '') + \", \" + formatAMPM(raf_sd) + \"-\" + formatAMPM(raf_ed)\n" +
+            "      document.getElementById(\"raf_alert_banner\").className = \"bg-" + (alert_store.get("type") === "interrupt" ? "yellow" : "red") + "-500\";\n" +
+            "      document.getElementById(\"raf_alert_icon\").className = \"flex p-2 rounded-lg bg-" + (alert_store.get("type") === "interrupt" ? "yellow" : "red") + "-600\";\n" +
+            "      document.getElementById(\"raf_alert_hide\").className = \"-mr-1 flex p-2 rounded-md hover:bg-" + (alert_store.get("type") === "interrupt" ? "yellow" : "red") + "-600 focus:outline-none focus:ring-2 focus:ring-white sm:-mr-2 bg-transparent bg-none border-none\";\n" +
+            "    }\n" +
+            "  })();\n" +
+            "};" +
+            "function hide_raf_alert() {\n" +
+            "  window.localStorage.setItem('raf_alert_' + raf_alert_tag, true);\n" +
+            "  document.getElementById(\"raf_alert_banner\").className = \"hidden\";\n" +
+            "}\n";
     }
     res.header("Access-Control-Allow-Origin", "*"); // Allow anyone to request this site, cookies are not logged
+    res.type('.js');
     res.send(payload);
-    console.log(wipe(`${chalk.bold.magenta('Fastify')}: [` + moment().format('MM/DD/YY-HH:mm:ss') + `] GET /api/alert`));
+    console.log(wipe(`${chalk.bold.magenta('API Fastify')}: [` + moment().format('MM/DD/YY-HH:mm:ss') + `] GET /api/alert`));
 })
 
 // End of Fastify and main functions - - - - - - - - - - - - - - - - - - - - - -
@@ -127,19 +152,10 @@ app.get('/api/alert', async function (req, res) {
 
 // Setup external connections - - - - - - - - - - - - - - - - - - - - - - - - -
 
-// // Start webserver using config values
-// console.log(wipe(`${chalk.bold.magenta('Fastify')}: [` + moment().format('MM/DD/YY-HH:mm:ss') + `] Attempting to start http webserver on port ` + config_store.get('webserver_port')));
-// app.listen(config_store.get('webserver_port'), function (err) {
-//     if (err) {
-//         console.log(err);
-//         process.exit(1)
-//     }
-//     console.log(wipe(`${chalk.bold.magenta('Fastify')}: [` + moment().format('MM/DD/YY-HH:mm:ss') + `] Running http webserver on port ` + config_store.get('webserver_port')));
-//     // Connect discord bot
-//     bot.connect().then(r => {  setTimeout(function () { status.ping_servers(bot, config_store) }, 1000); });
-//     // Dynamically ping servers every minute
-//     setInterval(function () { status.dynamic_ping(false, bot, config_store) }, 60000);
-// })
+// Connect discord bot
+bot.connect().then(r => {  setTimeout(function () { status.ping_servers(bot, config_store) }, 1000); });
+// Dynamically ping servers every minute
+setInterval(function () { status.dynamic_ping(false, bot, config_store) }, 60000);
 
 // End of Setup external connections - - - - - - - - - - - - - - - - - - - - - -
 

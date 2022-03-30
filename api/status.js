@@ -43,13 +43,28 @@ exports.import_services = function (file) {
     })
 }
 
+// Name : status.update_service_maintain(alias, maintain)
+// Desc : update maintain value of service
+// Author(s) : RAk3rman
+exports.update_service_maintain = function (alias, maintain) {
+  // Get service object
+  let serv = services.get(alias);
+  if (!serv) return;
+  // Update value
+  if (maintain === true || maintain === false) {
+    serv.maintain = maintain;
+    return true;
+  }
+  return false;
+}
+
 // Name : status.dynamic_ping(bot, config_store)
 // Desc : dynamically checks when we should ping servers
 // Author(s) : RAk3rman
 exports.dynamic_ping = function (is_urgent, bot, config_store) {
     // Ping if we need one is scheduled already
     if (moment().isAfter(next_ping)) {
-        console.log(wipe(`${chalk.bold.yellow('Status')}:  [` + moment().format('MM/DD/YY-HH:mm:ss') + `] Pinging all servers on ` + moment().diff(last_ping, "minute") + ` min interval`));
+        console.log(wipe(`${chalk.bold.yellow('API Pinger')}:  [` + moment().format('MM/DD/YY-HH:mm:ss') + `] Pinging all servers on ` + moment().diff(last_ping, "minute") + ` min interval`));
         last_ping = moment();
         status.ping_servers(bot, config_store);
     }
@@ -87,7 +102,7 @@ function check_server(alias, bot, config_store) {
         if (serv.active) {
             // Log that we just connected
             bot.createMessage(config_store.get('discord_bot_channel'), "@everyone :white_check_mark: <" + alias + "> just came online");
-            console.log(wipe(`${chalk.bold.yellow('Status')}:  [` + moment().format('MM/DD/YY-HH:mm:ss') + `] ` + alias + ` just came online`));
+            console.log(wipe(`${chalk.bold.yellow('API Pinger')}:  [` + moment().format('MM/DD/YY-HH:mm:ss') + `] ` + alias + ` just came online`));
         }
         // Update serv object to reflect status
         serv.active = true;
@@ -98,9 +113,9 @@ function check_server(alias, bot, config_store) {
         if (serv.active) {
             // Log that we encountered an error
             bot.createMessage(config_store.get('discord_bot_channel'), "@everyone :warning: <" + alias + "> just went offline via error");
-            console.log(wipe(`${chalk.bold.yellow('Status')}:  [` + moment().format('MM/DD/YY-HH:mm:ss') + `] ` + alias + ` just went offline via error`));
+            console.log(wipe(`${chalk.bold.yellow('API Pinger')}:  [` + moment().format('MM/DD/YY-HH:mm:ss') + `] ` + alias + ` just went offline via error`));
         } else {
-            console.log(wipe(`${chalk.bold.yellow('Status')}:  [` + moment().format('MM/DD/YY-HH:mm:ss') + `] ` + alias + ` is down: error`));
+            console.log(wipe(`${chalk.bold.yellow('API Pinger')}:  [` + moment().format('MM/DD/YY-HH:mm:ss') + `] ` + alias + ` is down: error`));
         }
         // Update serv object to reflect status
         serv.active = false;
@@ -109,9 +124,9 @@ function check_server(alias, bot, config_store) {
         if (serv.active) {
             // Log that we encountered an error
             bot.createMessage(config_store.get('discord_bot_channel'), "@everyone :warning: <" + alias + "> just went offline via timeout");
-            console.log(wipe(`${chalk.bold.yellow('Status')}:  [` + moment().format('MM/DD/YY-HH:mm:ss') + `] ` + alias + ` just went offline via timeout`));
+            console.log(wipe(`${chalk.bold.yellow('API Pinger')}:  [` + moment().format('MM/DD/YY-HH:mm:ss') + `] ` + alias + ` just went offline via timeout`));
         } else {
-            console.log(wipe(`${chalk.bold.yellow('Status')}:  [` + moment().format('MM/DD/YY-HH:mm:ss') + `] ` + alias + ` is down: timeout`));
+            console.log(wipe(`${chalk.bold.yellow('API Pinger')}:  [` + moment().format('MM/DD/YY-HH:mm:ss') + `] ` + alias + ` is down: timeout`));
         }
         // Update serv object to reflect status
         serv.active = false;
@@ -129,8 +144,8 @@ exports.get_payload = function () {
         payload.push({
             name: key,
             href: "https://" + key,
-            uptime: moment(value.last_up).fromNow(),
-            downtime: moment(value.last_down).fromNow(),
+            uptime: moment(value.last_down).fromNow(),
+            downtime: moment(value.last_up).fromNow(),
             location: value.location,
             active: value.active,
             maintain: value.maintain

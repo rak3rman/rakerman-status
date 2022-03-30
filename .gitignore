@@ -6,6 +6,8 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+api/config/config.json
+api/config/alert.json
 
 # Runtime data
 pids
