@@ -99,9 +99,9 @@ function check_server(alias, bot, config_store) {
     if (!serv) return;
     // Set cases for sock connection
     sock.on('connect', function() { // Valid connection, service is up
-        if (serv.active) {
+        if (!serv.active) {
             // Log that we just connected
-            bot.createMessage(config_store.get('discord_bot_channel'), "@everyone :white_check_mark: <" + alias + "> just came online");
+            bot.createMessage(config_store.get('discord_bot_channel'), "**" + alias + "** just came online");
             console.log(wipe(`${chalk.bold.yellow('API Pinger')}:  [` + moment().format('MM/DD/YY-HH:mm:ss') + `] ` + alias + ` just came online`));
         }
         // Update serv object to reflect status
@@ -112,10 +112,10 @@ function check_server(alias, bot, config_store) {
     }).on('error', function(e) { // Connection error, service is down
         if (serv.active) {
             // Log that we encountered an error
-            bot.createMessage(config_store.get('discord_bot_channel'), "@everyone :warning: <" + alias + "> just went offline via error");
+            bot.createMessage(config_store.get('discord_bot_channel'), "**" + alias + "** just went offline via error");
             console.log(wipe(`${chalk.bold.yellow('API Pinger')}:  [` + moment().format('MM/DD/YY-HH:mm:ss') + `] ` + alias + ` just went offline via error`));
         } else {
-            console.log(wipe(`${chalk.bold.yellow('API Pinger')}:  [` + moment().format('MM/DD/YY-HH:mm:ss') + `] ` + alias + ` is down: error`));
+            console.log(wipe(`${chalk.bold.yellow('API Pinger')}:  [` + moment().format('MM/DD/YY-HH:mm:ss') + `] ` + alias + ` is still down: error`));
         }
         // Update serv object to reflect status
         serv.active = false;
@@ -123,10 +123,10 @@ function check_server(alias, bot, config_store) {
     }).on('timeout', function(e) { // Timeout, service is down
         if (serv.active) {
             // Log that we encountered an error
-            bot.createMessage(config_store.get('discord_bot_channel'), "@everyone :warning: <" + alias + "> just went offline via timeout");
+            bot.createMessage(config_store.get('discord_bot_channel'), "**" + alias + "** just went offline via timeout");
             console.log(wipe(`${chalk.bold.yellow('API Pinger')}:  [` + moment().format('MM/DD/YY-HH:mm:ss') + `] ` + alias + ` just went offline via timeout`));
         } else {
-            console.log(wipe(`${chalk.bold.yellow('API Pinger')}:  [` + moment().format('MM/DD/YY-HH:mm:ss') + `] ` + alias + ` is down: timeout`));
+            console.log(wipe(`${chalk.bold.yellow('API Pinger')}:  [` + moment().format('MM/DD/YY-HH:mm:ss') + `] ` + alias + ` is still down: timeout`));
         }
         // Update serv object to reflect status
         serv.active = false;

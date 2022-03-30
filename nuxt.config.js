@@ -34,7 +34,7 @@ export default {
 
   // Server configuration: https://nuxtjs.org/docs/features/configuration/#edit-host-and-port
   server: {
-    port: 3999
+    port: 3000
   },
 
   // Global CSS: https://go.nuxtjs.dev/config-css
@@ -65,9 +65,9 @@ export default {
   build: {
   },
 
-  // axios: {
-  //   baseURL:'http://localhost:3010'
-  // },
+  axios: {
+    baseURL:'https://status.rakerman.com'
+  },
 
   serverMiddleware: [
     '~/api/app.js'

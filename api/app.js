@@ -48,7 +48,7 @@ bot.on('ready', async () => {
     console.log(wipe(`${chalk.bold.blue('API Discord')}: [` + moment().format('MM/DD/YY-HH:mm:ss') + `] Bot is now connected to Discord API`));
     // Send connected bot message
     if (send_startup_msg) {
-        await bot.createMessage(config_store.get('discord_bot_channel'), ":white_check_mark: **RAkerman Fallback v" + pkg.version + ": Service Online**");
+        await bot.createMessage(config_store.get('discord_bot_channel'), "**RAkerman Fallback v" + pkg.version + ": Service Online**");
         send_startup_msg = false;
     }
 });
@@ -69,7 +69,7 @@ bot.on('messageCreate', async (msg) => {
                     alert_store.set("type", parts[2]);
                     alert_store.set("start", moment.unix(parseInt(parts[3])));
                     alert_store.set("end", moment.unix(parseInt(parts[3])).add(parseInt(parts[4]), "hours"));
-                    await bot.createMessage(config_store.get('discord_bot_channel'), ":white_check_mark: **RAkerman Fallback v" + pkg.version + ": Updated Alert**\n`" + parts[2] + "` `" + moment(alert_store.get("start")).format("MM/DD/YY-HH:mm") + "` to `" + moment(alert_store.get("end")).format("MM/DD/YY-HH:mm") + "`");
+                    await bot.createMessage(config_store.get('discord_bot_channel'), "**RAkerman Fallback v" + pkg.version + ": Updated Alert**\n`" + parts[2] + "` `" + moment(alert_store.get("start")).format("MM/DD/YY-HH:mm") + "` to `" + moment(alert_store.get("end")).format("MM/DD/YY-HH:mm") + "`");
                     console.log(wipe(`${chalk.bold.blue('API Discord')}: [` + moment().format('MM/DD/YY-HH:mm:ss') + `] Updated alert status (` + parts[2] + `, ` + moment(alert_store.get("start")).format("MM/DD/YY-HH:mm") + ` to ` + moment(alert_store.get("end")).format("MM/DD/YY-HH:mm") + `)`));
                     return;
                 }
@@ -77,12 +77,12 @@ bot.on('messageCreate', async (msg) => {
                 // Validate command input
                 if (status.update_service_maintain(parts[2], parts[3] === "true")) {
                     // Update options
-                    await bot.createMessage(config_store.get('discord_bot_channel'), ":white_check_mark: **RAkerman Fallback v" + pkg.version + ": Updated Maintain Status**\n`" + parts[2] + "` `" + (parts[3] === "true") + "`");
+                    await bot.createMessage(config_store.get('discord_bot_channel'), ":**RAkerman Fallback v" + pkg.version + ": Updated Maintain Status**\n`" + parts[2] + "` is now `" + (parts[3] === "true") + "`");
                     console.log(wipe(`${chalk.bold.blue('API Discord')}: [` + moment().format('MM/DD/YY-HH:mm:ss') + `] Updated maintain status (` + parts[2] + `, ` + (parts[3] === "true") + `)`));
                     return;
                 }
             }
-            await bot.createMessage(config_store.get('discord_bot_channel'), ":grey_question: **RAkerman Fallback v" + pkg.version + ": Invalid Command**\n> raf alert <desc (maintain, interrupt)> <unix_timestamp> <duration_in_hrs>");
+            await bot.createMessage(config_store.get('discord_bot_channel'), "**RAkerman Fallback v" + pkg.version + "**\n> raf alert <desc (maintain, interrupt)> <unix_timestamp> <duration_in_hrs>\n> raf maintain <alias> <status (true, false)>");
             console.log(wipe(`${chalk.bold.blue('API Discord')}: [` + moment().format('MM/DD/YY-HH:mm:ss') + `] User sent invalid command`));
         }
         // Else, do nothing and ignore message
