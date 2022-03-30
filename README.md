@@ -1,69 +1,34 @@
-# rakerman-status
+# RAkerman Fallback
 
-## Build Setup
+A fallback web server and status monitor for rakerman.com
 
-```bash
-# install dependencies
-$ npm install
+![Demo UI](public/images/demo_ui.png)
 
-# serve with hot reload at localhost:3000
-$ npm run dev
+### Basic Structure
+This project is intended to serve as a fallback web server and status monitor for any site hosted under the rakerman.com domain.
+If any service suddenly becomes disconnected, this web server will handle any redirected traffic.
+RAkerman Fallback also hosts status.rakerman.com, which displays the status of all related sites.
+And oh yeah, whenever a service comes offline it triggers a Discord bot to send a message to any channel of your choosing.
+Pretty cool right?
 
-# build for production and launch server
-$ npm run build
-$ npm run start
-
-# generate static project
-$ npm run generate
+## Install and Setup
+*Please note that this project will require a lot of customization to get running for your own purposes. 
+A large portion of the logic is hard-coded.*
+- Clone the repository from https://github.com
 ```
-
-For detailed explanation on how things work, check out the [documentation](https://nuxtjs.org).
-
-## Special Directories
-
-You can create the following extra directories, some of which have special behaviors. Only `pages` is required; you can delete them if you don't want to use their functionality.
-
-### `assets`
-
-The assets directory contains your uncompiled assets such as Stylus or Sass files, images, or fonts.
-
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/assets).
-
-### `components`
-
-The components directory contains your Vue.js components. Components make up the different parts of your page and can be reused and imported into your pages, layouts and even other components.
-
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/components).
-
-### `layouts`
-
-Layouts are a great help when you want to change the look and feel of your Nuxt app, whether you want to include a sidebar or have distinct layouts for mobile and desktop.
-
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/layouts).
-
-
-### `pages`
-
-This directory contains your application views and routes. Nuxt will read all the `*.vue` files inside this directory and setup Vue Router automatically.
-
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/get-started/routing).
-
-### `plugins`
-
-The plugins directory contains JavaScript plugins that you want to run before instantiating the root Vue.js Application. This is the place to add Vue plugins and to inject functions or constants. Every time you need to use `Vue.use()`, you should create a file in `plugins/` and add its path to plugins in `nuxt.config.js`.
-
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/plugins).
-
-### `static`
-
-This directory contains your static files. Each file inside this directory is mapped to `/`.
-
-Example: `/static/robots.txt` is mapped as `/robots.txt`.
-
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/static).
-
-### `store`
-
-This directory contains your Vuex store files. Creating a file in this directory automatically activates Vuex.
-
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/store).
+git clone https://github.com/RAK3RMAN/rakerman-fallback.git
+```
+- Setup RAkerman Fallback
+    - Enter the rakerman-fallback folder
+        - `cd rakerman-fallback`
+    - Install all required packages with root-level access (if needed)
+        - `sudo npm install`    
+    - Start default application using npm
+        - `npm start`
+    - If you want a different broadcast port, you can configure these values by proceeding with the:
+        - Hardcode option:
+            - Enter the `config.json` file
+                - `sudo rakerman-fallback/config/config.json`
+            - Edit the `webserver_port` parameter to your desired configuration
+    - If any errors occur, please read the logs and attempt to resolve. If resolution cannot be achieved, post in the issues under this project. 
+- Access web application through `localhost:3000`

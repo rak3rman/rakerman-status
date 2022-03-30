@@ -1,0 +1,50 @@
+{
+  "name": "rakerman-fallback",
+  "version": "2.0.0-beta",
+  "description": "A fallback web server and status monitor for rakerman.com",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "build": "cd public/css && cross-env NODE_ENV=production npx tailwindcss-cli@latest build -o banner.css -c ../../config/banner.tailwind.config.js && cd ../../"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RAK3RMAN/rakerman-fallback.git"
+  },
+  "author": "RAk3rman",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/RAK3RMAN/rakerman-fallback/issues"
+  },
+  "homepage": "https://github.com/RAK3RMAN/rakerman-fallback#readme",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "chai": "^4.3.0",
+    "chalk": "^4.1.0",
+    "cookie-parser": "^1.4.4",
+    "cross-env": "^7.0.3",
+    "data-store": "^3.1.0",
+    "ejs": "^2.6.1",
+    "eris": "^0.15.1",
+    "express": "^4.17.1",
+    "express-session": "^1.15.6",
+    "fastify": "^3.27.4",
+    "fastify-formbody": "^5.0.0",
+    "fastify-rate-limit": "^5.0.0",
+    "fastify-socket.io": "^1.0.1",
+    "fastify-static": "^4.5.0",
+    "fastify-vite": "^2.3.1",
+    "fastify-vite-vue": "^2.3.1",
+    "handlebars": "^4.7.7",
+    "http": "0.0.0",
+    "http-errors": "^1.7.2",
+    "moment": "^2.29.1",
+    "nanoid": "^3.2.0",
+    "nodemon": "^2.0.6",
+    "ora": "^5.1.0",
+    "point-of-view": "^4.7.0",
+    "sweetalert2": "^10.16.2",
+    "unique-names-generator": "^4.3.1",
+    "uuid": "^3.3.2"
+  }
+}

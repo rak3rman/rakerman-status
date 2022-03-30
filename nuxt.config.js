@@ -1,15 +1,26 @@
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    title: 'rakerman-status',
+    title: 'RAkerman Status',
     htmlAttrs: {
-      lang: 'en'
+      lang: 'en',
+      class: 'h-full'
+    },
+    bodyAttrs: {
+      class: 'h-full'
     },
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: '' },
-      { name: 'format-detection', content: 'telephone=no' }
+      { hid: 'description', name: 'description', content: 'A real-time status monitor for rakerman.com' },
+      { name: 'og:description', content: 'A real-time status monitor for rakerman.com' },
+      { name: 'og:site_name', content: 'RAkerman Status' },
+      { name: 'og:title', content: 'RAkerman Status' },
+      { name: 'og:type', content: 'website' },
+      { name: 'og:url', content: 'https://status.rakerman.com/' },
+      { name: 'og:image', content: 'https://status.rakerman.com/images/bg5.jpeg' },
+      { name: 'author', content: 'Radison Akerman' },
+      { name: 'publisher', content: 'Radison Akerman' }
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
@@ -18,6 +29,7 @@ export default {
 
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: [
+    '@/static/css/custom.css'
   ],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
@@ -31,6 +43,8 @@ export default {
   buildModules: [
     // https://go.nuxtjs.dev/tailwindcss
     '@nuxtjs/tailwindcss',
+    '@nuxtjs/http',
+    '@nuxtjs/axios'
   ],
 
   // Modules: https://go.nuxtjs.dev/config-modules
@@ -39,5 +53,15 @@ export default {
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
-  }
+  },
+
+  // axios: {
+  //   baseURL:'http://localhost:3010'
+  // },
+
+  serverMiddleware: [
+    '~/api/app.js'
+  ]
+
+
 }

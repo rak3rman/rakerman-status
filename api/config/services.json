@@ -1,0 +1,50 @@
+[
+  {
+    "alias": "www.rakerman.com",
+    "url": "127.0.0.1",
+    "port": "3100",
+    "location": "US Central S1"
+  },
+  {
+    "alias": "chickens.rakerman.com",
+    "url": "127.0.0.1",
+    "port": "3101",
+    "location": "US Central S1"
+  },
+  {
+    "alias": "rratfr.rakerman.com",
+    "url": "127.0.0.1",
+    "port": "3102",
+    "location": "US Central S1"
+  },
+  {
+    "alias": "particlecord.rakerman.com",
+    "url": "127.0.0.1",
+    "port": "3103",
+    "location": "US Central S1"
+  },
+  {
+    "alias": "nextcloud.rakerman.com",
+    "url": "10.20.0.26",
+    "port": "443",
+    "location": "US Central S1"
+  },
+  {
+    "alias": "status.rakerman.com",
+    "url": "127.0.0.1",
+    "port": "3999",
+    "location": "US Central S1"
+  },
+  {
+    "alias": "www.pulqra.com",
+    "url": "127.0.0.1",
+    "port": "3200",
+    "location": "US Central S1"
+  },
+  {
+    "alias": "www.vibhavbansal.com",
+    "url": "127.0.0.1",
+    "port": "3210",
+    "location": "US Central S1"
+  }
+]
