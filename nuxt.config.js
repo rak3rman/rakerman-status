@@ -32,6 +32,11 @@ export default {
     ]
   },
 
+  // Server configuration: https://nuxtjs.org/docs/features/configuration/#edit-host-and-port
+  server: {
+    port: 3999
+  },
+
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: [
     '@/static/css/custom.css'
