@@ -65,9 +65,9 @@ export default {
   build: {
   },
 
-  axios: {
-    baseURL:'https://status.rakerman.com'
-  },
+  // axios: {
+  //   baseURL:'https://status.rakerman.com'
+  // },
 
   serverMiddleware: [
     '~/api/app.js'
