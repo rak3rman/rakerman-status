@@ -6,9 +6,10 @@
 
         <div class="mx-auto w-full max-w-md lg:w-[25rem] pb-4">
           <img class="h-8 w-auto" src="/images/rakerman-logo-dark.png" />
-          <h2 class="mt-6 text-3xl font-extrabold text-gray-900" v-if="total_offline === 0">All services operational.</h2>
+          <h2 class="mt-6 text-3xl font-extrabold text-gray-900" v-if="total_inactive === 0 && total_maintain === 0">All services operational.</h2>
+          <h2 class="mt-6 text-3xl font-extrabold text-gray-900" v-else-if="total_inactive === 0">Scheduled <br>maintenance underway.</h2>
           <h2 class="mt-6 text-3xl font-extrabold text-gray-900" v-else>Houston, <br>we have a problem.</h2>
-          <p class="mt-2 text-sm text-gray-600" v-if="total_offline === 0">
+          <p class="mt-2 text-sm text-gray-600" v-if="total_inactive === 0 && total_maintain === 0">
             Having problems with a service?
             {{ ' ' }}
             <a href="https://www.rakerman.com/contact" class="font-medium" style="color: #586CB2"> Let us know. </a>
@@ -21,7 +22,7 @@
         <div class="mx-auto w-full max-w-md lg:w-[25rem] overflow-auto pb-1.5">
           <div class="overflow-auto pr-3">
             <ul role="list" class="relative z-0 divide-y divide-gray-200 border-b border-t border-gray-200 overflow-auto">
-              <li v-for="service in services" :key="service.name" class="relative py-3 hover:bg-gray-50">
+              <li v-for="service in services" :key="service.name" class="relative py-3 hover:bg-gray-50 snap-center">
                 <div class="flex items-center justify-between space-x-4">
                   <div class="min-w-0 space-y-2">
                     <div class="flex items-center space-x-3 pl-0.5">
@@ -103,7 +104,8 @@ export default {
   data () {
     return {
       services: {},
-      total_offline: 1,
+      total_inactive: 1,
+      total_maintain: 0,
       img: Math.floor(Math.random() * (7)) + 1,
     }
   },
@@ -111,9 +113,11 @@ export default {
     // Fetch list of services from api
     this.services = await this.$axios.$get('/api/status/all');
     // Calculate total number of services offline
-    this.total_offline = 0;
+    this.total_inactive = 0;
+    this.total_maintain = 0;
     this.services.forEach(service => {
-      if (!service.active) this.total_offline++;
+      if (!service.active) this.total_inactive++;
+      if (service.maintain) this.total_maintain++;
     })
   },
 }
