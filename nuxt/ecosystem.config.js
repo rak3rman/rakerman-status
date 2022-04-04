@@ -3,7 +3,7 @@ module.exports = {
     {
       name: 'rakerman-status',
       exec_mode: 'cluster',
-      instances: '1',
+      instances: '2',
       script: './node_modules/nuxt/bin/nuxt.js',
       args: 'start'
     }
