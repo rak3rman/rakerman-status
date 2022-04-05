@@ -72,6 +72,4 @@ export default {
   serverMiddleware: [
     '~/api/app.js'
   ]
-
-
 }

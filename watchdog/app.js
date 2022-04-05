@@ -7,105 +7,20 @@ Author(s): RAk3rman
 // Packages and configuration - - - - - - - - - - - - - - - - - - - - - - - - -
 
 // Declare packages
-const eris = require('eris');
 const mongoose = require('mongoose');
+const Service = mongoose.models.Service || mongoose.model('Service', mongoose.Schema(require('../../models/service.js')));
+const Alert = mongoose.models.Alert || mongoose.model('Alert', mongoose.Schema(require('../../models/alert.js')));
 const moment = require('moment');
 const pkg = require('./package.json');
 const chalk = require('chalk');
 const wipe = chalk.white;
 
 // Read environment variables
-let bot_token = process.env.BOT_TOKEN;
-if (!bot_token || bot_token.length === 0)
-    throw new Error('You must specify the Discord Bot Token via the BOT_TOKEN environment variable!');
-
-let bot_channel = process.env.BOT_CHANNEL;
-if (!bot_channel || bot_channel.length === 0)
-    throw new Error('You must specify the Discord Bot Channel via the BOT_CHANNEL environment variable!');
-
 let mongodb_url = process.env.MONGODB_URL;
 if (!mongodb_url || mongodb_url.length === 0)
     throw new Error('You must specify the MongoDB URL via the MONGODB_URL environment variable!');
 
-// Discord bot
-const bot = new eris.Client(bot_token);
-let send_startup_msg = true;
-
 // End of Packages and configuration - - - - - - - - - - - - - - - - - - - - - -
-
-
-// Mongoose setup - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-const serviceSchema = new mongoose.Schema({
-    alias: {type: String, required: true},
-    url: {type: String, required: true},
-    port: {type: Number, required: true},
-    location: {type: String, required: true},
-    last_down: {type: Date, default: Date.now()},
-    last_up: {type: Date, default: Date.now()},
-    active: {type: Boolean, default: false},
-    maintain: {type: Boolean, default: false}
-})
-
-const Service = mongoose.model('Service', serviceSchema);
-
-// End of Mongoose setup - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-
-// Eris Discord bot - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-// When the bot is connected and ready, update console
-bot.on('ready', async () => {
-    // Set bot status
-    bot.editStatus("online");
-    // Send connected bot message
-    if (send_startup_msg) {
-        await bot.createMessage(bot_channel, "**RAkerman Watchdog v" + pkg.version + ": Service Online**");
-        send_startup_msg = false;
-    }
-});
-
-// Every time a message is created in the Discord server
-bot.on('messageCreate', async (msg) => {
-    // Only respond to message if in correct channel
-    if (msg.channel.id === bot_channel) {
-        // Split message into components
-        let parts = msg.content.split(' ');
-        // Determine if we received a command
-        if (parts[0] === "raf") {
-            if (parts[1] === "alert") { // Update alert data
-                // Validate command input
-                if ((parts[2] === "maintain" || parts[2] === "interrupt") && moment.unix(parseInt(parts[3])).isAfter(moment().subtract(6, "hours")) && parseInt(parts[4]) > -1) {
-                    // Update options
-                    alert_store.set("tag", nanoid(6));
-                    alert_store.set("type", parts[2]);
-                    alert_store.set("start", moment.unix(parseInt(parts[3])));
-                    alert_store.set("end", moment.unix(parseInt(parts[3])).add(parseInt(parts[4]), "hours"));
-                    await bot.createMessage(bot_channel, "**RAkerman Watchdog v" + pkg.version + ": Updated Alert**\n`" + parts[2] + "` `" + moment(alert_store.get("start")).format("MM/DD/YY-HH:mm") + "` to `" + moment(alert_store.get("end")).format("MM/DD/YY-HH:mm") + "`");
-                }
-            } else if (parts[1] === "maintain") { // Mark maintenance status for service
-                // Validate command input
-                let service = await Service.find({alias: parts[2]});
-                if (service.length > 0) {
-                    // Update options
-                    service.maintain = parts[3] === "true";
-                    service.save();
-                    await bot.createMessage(bot_channel, ":**RAkerman Watchdog v" + pkg.version + ": Updated Maintain Status**\n`" + parts[2] + "` is now `" + (parts[3] === "true") + "`");
-                }
-            } else {
-                await bot.createMessage(bot_channel, "**RAkerman Watchdog v" + pkg.version + "**\n> raf alert <desc (maintain, interrupt)> <unix_timestamp> <duration_in_hrs>\n> raf maintain <alias> <status (true, false)>");
-            }
-        }
-        // Else, do nothing and ignore message
-    }
-});
-
-// Handle any errors that the bot encounters
-bot.on('error', err => {
-    console.warn(err);
-});
-
-// End of Eris Discord bot - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 
 // Watchdog helpers - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -119,7 +34,7 @@ let next_ping = moment();
 async function dynamic_ping() {
     // Ping if we need one is scheduled already
     if (moment().isAfter(next_ping)) {
-        console.log(wipe(`${chalk.bold.red('Watchdog')}:  [` + moment().format('MM/DD/YY-HH:mm:ss') + `] Pinging all servers on ` + moment().diff(last_ping, "minute") + ` min interval`));
+        console.log(wipe(`${chalk.bold.red('Watchdog')}:  [` + moment().format('MM/DD/YY-HH:mm:ss') + `] Pinging all servers, ` + moment().diff(last_ping, "minute") + ` mins since last ping`));
         last_ping = moment();
         await ping_servers();
     }
@@ -138,7 +53,7 @@ async function ping_servers() {
     let services = await Service.find();
     services.map(service => {
         check_server(service);
-    })
+    });
 }
 
 // Name : status.check_server(alias, bot, config_store)
@@ -152,7 +67,6 @@ async function check_server(service) {
     sock.on('connect', async function() { // Valid connection, service is up
         if (!service.active) {
             // Log that we just connected
-            await bot.createMessage(bot_channel, "**" + service.alias + "** just came online");
             console.log(wipe(`${chalk.bold.red('Watchdog')}:  [` + moment().format('MM/DD/YY-HH:mm:ss') + `] ` + service.alias + ` just came online`));
         }
         // Update serv object to reflect status
@@ -164,7 +78,6 @@ async function check_server(service) {
     }).on('error', async function(e) { // Connection error, service is down
         if (service.active) {
             // Log that we encountered an error
-            await bot.createMessage(bot_channel, "**" + service.alias + "** just went offline via error");
             console.log(wipe(`${chalk.bold.red('Watchdog')}:  [` + moment().format('MM/DD/YY-HH:mm:ss') + `] ` + service.alias + ` just went offline via error`));
         } else {
             console.log(wipe(`${chalk.bold.red('Watchdog')}:  [` + moment().format('MM/DD/YY-HH:mm:ss') + `] ` + service.alias + ` is still down: error`));
@@ -176,7 +89,6 @@ async function check_server(service) {
     }).on('timeout', async function(e) { // Timeout, service is down
         if (service.active) {
             // Log that we encountered an error
-            await bot.createMessage(bot_channel, "**" + service.alias + "** just went offline via timeout");
             console.log(wipe(`${chalk.bold.red('Watchdog')}:  [` + moment().format('MM/DD/YY-HH:mm:ss') + `] ` + service.alias + ` just went offline via timeout`));
         } else {
             console.log(wipe(`${chalk.bold.red('Watchdog')}:  [` + moment().format('MM/DD/YY-HH:mm:ss') + `] ` + service.alias + ` is still down: timeout`));
@@ -193,11 +105,15 @@ async function check_server(service) {
 
 // Start application - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-// Mongoose connect to MongoDB
-await mongoose.connect(mongodb_url);
-// Connect discord bot
-bot.connect().then(r => {  setTimeout(async () => { await ping_servers() }, 1000); });
-// Dynamically ping servers every minute
-setInterval(async () => { await dynamic_ping() }, 60000);
+main().catch(err => console.log(err));
+
+async function main() {
+    // Mongoose connect to MongoDB
+    await mongoose.connect(mongodb_url);
+    // Ping services on startup
+    await dynamic_ping();
+    // Dynamically ping servers every minute
+    setInterval(async () => { await dynamic_ping() }, 60000);
+}
 
 // End of Start application - - - - - - - - - - - - - - - - - - - - - - - - - - -

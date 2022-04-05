@@ -111,7 +111,7 @@ export default {
   },
   async fetch() {
     // Fetch list of services from api
-    this.services = await this.$axios.$get('/api/status/all');
+    this.services = await this.$axios.$get('/api/service/status');
     // Calculate total number of services offline
     this.total_inactive = 0;
     this.total_maintain = 0;

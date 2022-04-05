@@ -5,7 +5,10 @@ module.exports = {
       exec_mode: 'cluster',
       instances: '2',
       script: './node_modules/nuxt/bin/nuxt.js',
-      args: 'start'
+      args: 'start',
+      env: {
+        MONGODB_URL: "mongodb://localhost:27017/rakerman-status"
+      }
     }
   ]
 }
