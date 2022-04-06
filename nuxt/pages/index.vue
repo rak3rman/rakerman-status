@@ -7,7 +7,7 @@
         <div class="mx-auto w-full max-w-md lg:w-[25rem] pb-4">
           <img class="h-8 w-auto" src="/images/rakerman-logo-dark.png" />
           <h2 class="mt-6 text-3xl font-extrabold text-gray-900" v-if="total_inactive === 0 && total_maintain === 0">All services operational.</h2>
-          <h2 class="mt-6 text-3xl font-extrabold text-gray-900" v-else-if="total_inactive === 0">Scheduled <br>maintenance underway.</h2>
+          <h2 class="mt-6 text-3xl font-extrabold text-gray-900" v-else-if="total_inactive > 0 && total_maintain > 0">Scheduled <br>maintenance underway.</h2>
           <h2 class="mt-6 text-3xl font-extrabold text-gray-900" v-else>Houston, <br>we have a problem.</h2>
           <p class="mt-2 text-sm text-gray-600" v-if="total_inactive === 0 && total_maintain === 0">
             Having problems with a service?

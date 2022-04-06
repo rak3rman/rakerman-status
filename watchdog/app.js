@@ -8,9 +8,10 @@ Author(s): RAk3rman
 
 // Declare packages
 const mongoose = require('mongoose');
-const Service = mongoose.models.Service || mongoose.model('Service', mongoose.Schema(require('../../models/service.js')));
-const Alert = mongoose.models.Alert || mongoose.model('Alert', mongoose.Schema(require('../../models/alert.js')));
+const Service = mongoose.models.Service || mongoose.model('Service', mongoose.Schema(require('../models/service.js')));
+const Alert = mongoose.models.Alert || mongoose.model('Alert', mongoose.Schema(require('../models/alert.js')));
 const moment = require('moment');
+const net = require('net');
 const pkg = require('./package.json');
 const chalk = require('chalk');
 const wipe = chalk.white;
@@ -39,10 +40,10 @@ async function dynamic_ping() {
         await ping_servers();
     }
     // Determine ping urgency
-    if (await Service.find({ active: false }).length > 0) { // If one of the servers is currently down, check every minute
+    if ((await Service.find({ active: false })).length > 0) { // If one of the servers is currently down, check every minute
         next_ping = moment(last_ping).add(1, "minute");
-    } else if (moment(last_ping).diff(next_ping, "minute") > 5 || moment().isAfter(next_ping)) { // Else, check every 5 minutes since we shouldn't expect any issues
-        next_ping = moment(last_ping).add(4, "hour");
+    } else if (moment().isAfter(next_ping)) { // Else, check every 5 minutes since we shouldn't expect any issues
+        next_ping = moment(last_ping).add(5, "minute");
     }
 }
 

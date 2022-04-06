@@ -17,5 +17,9 @@ module.exports = {
     end: {
         type: Date,
         required: true
+    },
+    created: {
+        type: Date,
+        default: Date.now
     }
 };

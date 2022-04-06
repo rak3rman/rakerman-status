@@ -8,6 +8,7 @@ Author(s): RAk3rman
 
 // Declare packages
 const app = require('express')();
+const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const Service = mongoose.models.Service || mongoose.model('Service', mongoose.Schema(require('../../models/service.js')));
 const Alert = mongoose.models.Alert || mongoose.model('Alert', mongoose.Schema(require('../../models/alert.js')));
@@ -21,12 +22,16 @@ let mongodb_url = process.env.MONGODB_URL;
 if (!mongodb_url || mongodb_url.length === 0)
   throw new Error('You must specify the MongoDB URL via the MONGODB_URL environment variable!');
 
+// Setup express with body parser
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json())
+
 // End of Packages and configuration - - - - - - - - - - - - - - - - - - - - - -
 
 
 // Fastify and main functions - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-// GET : Status for all services
+// GET : READ service status for ALL
 app.get('/api/service/status', async function (req, res) {
   // Get formatted list of services
   let payload = [];
@@ -48,11 +53,31 @@ app.get('/api/service/status', async function (req, res) {
   console.log(wipe(`${chalk.bold.magenta('Status API')}: [` + moment().format('MM/DD/YY-HH:mm:ss') + `] GET /api/service/status`));
 })
 
-// RAF Alert
+// POST: CREATE/UPDATE Service
+app.post('/api/service', async function (req, res) {
+  // Attempt to create new service object
+  let query = { 'alias': req.body.alias };
+  let service = {
+    alias: req.body.alias,
+    url: req.body.url,
+    port: req.body.port,
+    location: req.body.location,
+    subscribers: req.body.subscribers.split(', '),
+    maintain: req.body.maintain
+  };
+  Service.findOneAndUpdate(query, service, {upsert: true}, function(err, doc) {
+    if (err) return res.status(500).send(err);
+    return res.send(doc);
+  });
+  // Send response
+  console.log(wipe(`${chalk.bold.magenta('Status API')}: [` + moment().format('MM/DD/YY-HH:mm:ss') + `] POST /api/service`));
+})
+
+// GET: READ RAF Alert
 app.get('/api/alert', async function (req, res) {
   // Get alerts that are in the future
   let payload = "";
-  let alerts = await Alert.find({ end: { $gte: moment().subtract(12, 'hours'), $lte: moment() } });
+  let alerts = await Alert.find({ start: { $gte: moment().subtract(12, 'hours').toISOString() }, end: { $gte: moment().toISOString() } }).sort({created: 'desc'});
   if (alerts.length > 0) {
       payload = "let raf_alert_tag = \"" + alerts[0]._id + "\";\n" +
           "window.onload = function() {\n" +
@@ -86,6 +111,20 @@ app.get('/api/alert', async function (req, res) {
   res.type('.js');
   res.send(payload);
   console.log(wipe(`${chalk.bold.magenta('Status API')}: [` + moment().format('MM/DD/YY-HH:mm:ss') + `] GET /api/alert`));
+})
+
+// POST: CREATE Alert
+app.post('/api/alert', async function (req, res) {
+  // Attempt to create new service object
+  let alert = new Alert({
+    is_maintain: req.body.is_maintain,
+    start: req.body.start,
+    end: req.body.end
+  });
+  alert.save();
+  res.send(alert);
+  // Send response
+  console.log(wipe(`${chalk.bold.magenta('Status API')}: [` + moment().format('MM/DD/YY-HH:mm:ss') + `] POST /api/alert`));
 })
 
 // End of Fastify and main functions - - - - - - - - - - - - - - - - - - - - - -

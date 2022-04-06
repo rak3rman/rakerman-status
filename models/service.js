@@ -24,17 +24,14 @@ module.exports = {
     },
     last_down: {
         type: Date,
-        default: Date.now()
+        default: Date.now
     },
     last_up: {
         type: Date,
-        default: Date.now()
+        default: Date.now
     },
     subscribers: [{
-        email: {
-            type: String,
-            required: true
-        }
+        type: String
     }],
     active: {
         type: Boolean,
