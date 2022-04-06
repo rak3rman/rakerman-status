@@ -60,23 +60,27 @@ app.get('/api/service/status', async function (req, res) {
 // POST: CREATE/UPDATE Service
 app.post('/api/service', async function (req, res) {
   // Check if the secret matches
-  if (req.body.secret !== api_secret) return res.status(401).send("Unauthorized"); console.log(wipe(`${chalk.bold.magenta('Status API')}: [` + moment().format('MM/DD/YY-HH:mm:ss') + `] Unauthorized req to POST /api/service`));
-  // Attempt to create new service object
-  let query = { 'alias': req.body.alias };
-  let service = {
-    alias: req.body.alias,
-    url: req.body.url,
-    port: req.body.port,
-    location: req.body.location,
-    subscribers: req.body.subscribers.split(', '),
-    maintain: req.body.maintain
-  };
-  Service.findOneAndUpdate(query, service, {upsert: true}, function(err, doc) {
-    if (err) return res.status(500).send(err);
-    return res.send(doc);
-  });
-  // Send response
-  console.log(wipe(`${chalk.bold.magenta('Status API')}: [` + moment().format('MM/DD/YY-HH:mm:ss') + `] POST /api/service`));
+  if (req.body.secret !== api_secret) {
+    res.status(401).send("Unauthorized");
+    console.log(wipe(`${chalk.bold.magenta('Status API')}: [` + moment().format('MM/DD/YY-HH:mm:ss') + `] Unauthorized req to POST /api/service`));
+  } else {
+    // Attempt to create new service object
+    let query = { 'alias': req.body.alias };
+    let service = {
+      alias: req.body.alias,
+      url: req.body.url,
+      port: req.body.port,
+      location: req.body.location,
+      subscribers: req.body.subscribers.split(', '),
+      maintain: req.body.maintain
+    };
+    Service.findOneAndUpdate(query, service, {upsert: true}, function(err, doc) {
+      if (err) return res.status(500).send(err);
+      return res.send(doc);
+    });
+    // Send response
+    console.log(wipe(`${chalk.bold.magenta('Status API')}: [` + moment().format('MM/DD/YY-HH:mm:ss') + `] POST /api/service`));
+  }
 })
 
 // GET: READ RAF Alert
@@ -122,17 +126,21 @@ app.get('/api/alert', async function (req, res) {
 // POST: CREATE Alert
 app.post('/api/alert', async function (req, res) {
   // Check if the secret matches
-  if (req.body.secret !== api_secret) return res.status(401).send("Unauthorized"); console.log(wipe(`${chalk.bold.magenta('Status API')}: [` + moment().format('MM/DD/YY-HH:mm:ss') + `] Unauthorized req to POST /api/alert`));
-  // Attempt to create new service object
-  let alert = new Alert({
-    is_maintain: req.body.is_maintain,
-    start: req.body.start,
-    end: req.body.end
-  });
-  alert.save();
-  res.send(alert);
-  // Send response
-  console.log(wipe(`${chalk.bold.magenta('Status API')}: [` + moment().format('MM/DD/YY-HH:mm:ss') + `] POST /api/alert`));
+  if (req.body.secret !== api_secret) {
+    res.status(401).send("Unauthorized");
+    console.log(wipe(`${chalk.bold.magenta('Status API')}: [` + moment().format('MM/DD/YY-HH:mm:ss') + `] Unauthorized req to POST /api/alert`));
+  } else {
+    // Attempt to create new service object
+    let alert = new Alert({
+      is_maintain: req.body.is_maintain,
+      start: req.body.start,
+      end: req.body.end
+    });
+    alert.save();
+    res.send(alert);
+    // Send response
+    console.log(wipe(`${chalk.bold.magenta('Status API')}: [` + moment().format('MM/DD/YY-HH:mm:ss') + `] POST /api/alert`));
+  }
 })
 
 // End of Fastify and main functions - - - - - - - - - - - - - - - - - - - - - -
