@@ -12,8 +12,8 @@ export default {
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: 'A real-time status monitor for rakerman.com' },
-      { name: 'og:description', content: 'A real-time status monitor for rakerman.com' },
+      { hid: 'description', name: 'description', content: 'A real-time status monitor for RAkerman services' },
+      { name: 'og:description', content: 'A real-time status monitor for RAkerman services' },
       { name: 'og:site_name', content: 'RAkerman Status' },
       { name: 'og:title', content: 'RAkerman Status' },
       { name: 'og:type', content: 'website' },
@@ -35,6 +35,10 @@ export default {
   // Server configuration: https://nuxtjs.org/docs/features/configuration/#edit-host-and-port
   server: {
     port: 3000
+  },
+
+  axios: {
+    baseURL:'https://status.rakerman.com'
   },
 
   // Global CSS: https://go.nuxtjs.dev/config-css
@@ -64,10 +68,6 @@ export default {
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
   },
-
-  // axios: {
-  //   baseURL:'https://status.rakerman.com'
-  // },
 
   serverMiddleware: [
     '~/api/app.js'

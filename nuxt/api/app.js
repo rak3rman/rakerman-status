@@ -22,6 +22,10 @@ let mongodb_url = process.env.MONGODB_URL;
 if (!mongodb_url || mongodb_url.length === 0)
   throw new Error('You must specify the MongoDB URL via the MONGODB_URL environment variable!');
 
+let api_secret = process.env.API_SECRET;
+if (!api_secret || api_secret.length === 0)
+  throw new Error('You must specify the API Secret via the API_SECRET environment variable!');
+
 // Setup express with body parser
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
@@ -55,6 +59,8 @@ app.get('/api/service/status', async function (req, res) {
 
 // POST: CREATE/UPDATE Service
 app.post('/api/service', async function (req, res) {
+  // Check if the secret matches
+  if (req.body.secret !== api_secret) return res.status(401).send("Unauthorized"); console.log(wipe(`${chalk.bold.magenta('Status API')}: [` + moment().format('MM/DD/YY-HH:mm:ss') + `] Unauthorized req to POST /api/service`));
   // Attempt to create new service object
   let query = { 'alias': req.body.alias };
   let service = {
@@ -115,6 +121,8 @@ app.get('/api/alert', async function (req, res) {
 
 // POST: CREATE Alert
 app.post('/api/alert', async function (req, res) {
+  // Check if the secret matches
+  if (req.body.secret !== api_secret) return res.status(401).send("Unauthorized"); console.log(wipe(`${chalk.bold.magenta('Status API')}: [` + moment().format('MM/DD/YY-HH:mm:ss') + `] Unauthorized req to POST /api/alert`));
   // Attempt to create new service object
   let alert = new Alert({
     is_maintain: req.body.is_maintain,

@@ -7,7 +7,8 @@ module.exports = {
       script: './node_modules/nuxt/bin/nuxt.js',
       args: 'start',
       env: {
-        MONGODB_URL: "mongodb://localhost:27017/rakerman-status"
+        MONGODB_URL: "mongodb://localhost:27017/rakerman-status",
+        API_SECRET: "#"
       }
     }
   ]
