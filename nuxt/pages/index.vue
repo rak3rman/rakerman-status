@@ -20,7 +20,7 @@
         </div>
 
         <div class="mx-auto w-full max-w-md lg:w-[25rem] overflow-auto pb-1.5">
-          <div class="overflow-auto pr-3">
+          <div class="overflow-auto lg:pr-3">
             <ul role="list" class="relative z-0 divide-y divide-gray-200 border-b border-t border-gray-200 overflow-auto">
               <li v-for="service in services" :key="service.name" class="relative py-3 hover:bg-gray-50 snap-center">
                 <div class="flex items-center justify-between space-x-4">
@@ -88,7 +88,7 @@
 
         <div class="mx-auto w-full max-w-md lg:w-[25rem] flow-root pr-3">
           <a href="https://github.com/rak3rman/rakerman-status" class="mt-2 text-sm text-gray-400 float-left">rak3rman/rakerman-status</a>
-          <p class="mt-2 text-sm text-gray-400 float-right">v2.1.0</p>
+          <p class="mt-2 text-sm text-gray-400 float-right">v2.1.1</p>
         </div>
 
       </div>

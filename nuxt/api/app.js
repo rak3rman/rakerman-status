@@ -153,6 +153,8 @@ main().catch(err => console.log(err));
 async function main() {
   // Mongoose connect to MongoDB
   await mongoose.connect(mongodb_url);
+  // If rakerman-status is set as a service, reset lastdown
+  await Service.findOneAndUpdate({ alias: "status.rakerman.com" }, { last_down: moment() });
 }
 
 // End of Start application - - - - - - - - - - - - - - - - - - - - - - - - - - -

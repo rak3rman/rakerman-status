@@ -37,9 +37,9 @@ export default {
     port: 3000
   },
 
-  axios: {
-    baseURL:'https://status.rakerman.com'
-  },
+  // axios: {
+  //   baseURL:'https://status.rakerman.com'
+  // },
 
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: [

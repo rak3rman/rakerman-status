@@ -137,8 +137,8 @@ async function send_email(service, reason, desc) {
             "<br><code>Server URL: <b>" + service.url + "</b></code>\n" +
             "<br><code>Server Port: <b>" + service.port + "</b></code>\n" +
             "<br><code>Location: <b>" + service.location + "</b></code>\n" +
-            "<br><code>Last Up: <b>" + moment(service.last_up).format('LLL') + "</b></code>\n" +
-            "<br><code>Last Down: <b>" + moment(service.last_down).format('LLL') + "</b></code>\n" +
+            "<br><code>Last Up: <b>" + moment(service.last_up).format('LLL') + " CST</b></code>\n" +
+            "<br><code>Last Down: <b>" + moment(service.last_down).format('LLL') + " CST</b></code>\n" +
             "<br><code>Is Online: <b>" + service.active + "</b></code>\n" +
             "<br><code>Under Maintenance: <b>" + service.maintain + "</b></code></p>\n" +
             "<br>\n" +
