@@ -45,11 +45,17 @@ app.get('/api/service/status', async function (req, res) {
       name: service.alias,
       href: "https://" + service.alias,
       uptime: moment(service.last_down).fromNow(),
+      last_down: moment(service.last_down),
       downtime: moment(service.last_up).fromNow(),
+      last_up: moment(service.last_up),
       location: service.location,
       active: service.active,
       maintain: service.maintain
     });
+  });
+  // Sort services by last_down
+  payload.sort(function(a, b) {
+    return b.last_down - a.last_down;
   });
   // Send response
   res.header("Access-Control-Allow-Origin", "*"); // Allow anyone to request this site, cookies are not logged
