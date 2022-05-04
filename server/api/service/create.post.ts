@@ -1,11 +1,17 @@
 export default defineEventHandler(async (event) => {
-    let example = {
-        name: "www.rakerman.com",
-        location: "US Central S1"
-    }
-    let key = example.name
-    delete example.name
-    console.log(example)
+    let body = await useBody(event)
+    // Validate against requested params
+    if (!body.name || !body.is_maintain || !body.location) return "Invalid params. token, name, is_maintain, and location is required. subscribers is optional."
+    // Validate against token
+    if (body.token !== "#") return "Invalid token, please try again."
     // @ts-ignore
-    return await SERVICES.put(key, JSON.stringify(example))
+    await SERVICES.put(body.name, JSON.stringify({
+        is_up: false,
+        is_maintain: body.is_maintain,
+        last_up: Date.now(),
+        last_down: Date.now(),
+        location: body.location,
+        subscribers: body.subscribers,
+    }))
+    return "Right on! Data will propagate across the network over the next minute."
 })

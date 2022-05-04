@@ -5,9 +5,10 @@ export default defineEventHandler(async (event) => {
     let payload = [];
     for (const key of services.keys) {
         // @ts-ignore
-        let value = await SERVICES.get(key.name, {type: "json"});
-        value.name = key.name;
-        payload.push(value)
+        let value = await SERVICES.get(key.name, {type: "json"}) // Get service
+        value.name = key.name // Add name to payload
+        delete value.subscribers // Remove subscribers from payload
+        payload.push(value) // Add service to payload array
     }
     return payload;
 })
