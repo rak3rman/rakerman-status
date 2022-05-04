@@ -17,10 +17,6 @@ jobs:
         os: [ ubuntu-latest ]
         node: [ 14 ]
 
-    defaults:
-      run:
-        working-directory: ./nuxt3
-
     steps:
       - uses: actions/setup-node@v1
         with:
