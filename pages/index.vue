@@ -1,6 +1,6 @@
 <template>
   <div class="h-full">
-    <Banner />
+    <RAFBanner />
     <div class="h-min-screen lg:h-full flex">
       <div class="flex-1 flex flex-col justify-center lg:flex-none py-20 px-4 sm:px-6 lg:px-20 xl:px-24">
 
@@ -76,7 +76,7 @@
                     <p class="flex text-gray-500 text-sm space-x-2">
                       <span>{{ service.location }}</span>
                       <span aria-hidden="true">&middot;</span>
-                      <span v-if="service.active">Last deploy {{ service.uptime }}</span>
+                      <span v-if="service.active">Last incident {{ service.uptime }}</span>
                       <span v-else>Went down {{ service.downtime }}</span>
                     </p>
                   </div>
@@ -88,7 +88,7 @@
 
         <div class="mx-auto w-full max-w-md lg:w-[25rem] flow-root pr-3">
           <a href="https://github.com/rak3rman/rakerman-status" class="mt-2 text-sm text-gray-400 float-left">rak3rman/rakerman-status</a>
-          <p class="mt-2 text-sm text-gray-400 float-right">v2.1.3</p>
+          <p class="mt-2 text-sm text-gray-400 float-right">v2.2.0</p>
         </div>
 
       </div>
@@ -98,6 +98,7 @@
     </div>
   </div>
 </template>
+
 <script>
 export default {
   name: "Index",
