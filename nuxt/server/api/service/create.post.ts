@@ -6,7 +6,7 @@ export default defineEventHandler(async (event) => {
     if (body.token !== "#") return "Invalid token, please try again."
     // @ts-ignore
     await SERVICES.put(body.name, JSON.stringify({
-        is_up: false,
+        is_up: 'false',
         is_maintain: body.is_maintain,
         last_up: Date.now(),
         last_down: Date.now(),
