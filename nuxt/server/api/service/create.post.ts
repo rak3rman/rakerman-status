@@ -10,6 +10,7 @@ export default defineEventHandler(async (event) => {
         is_maintain: (body.is_maintain === 'true'),
         last_up: Date.now(),
         last_down: Date.now(),
+        trip_time: "?",
         location: body.location,
         subscribers: body.subscribers,
     }))
