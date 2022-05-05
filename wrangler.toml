@@ -9,18 +9,12 @@ kv_namespaces = [
     { binding = "SERVICES", id = "5f40026cc97041549aae3971b9334a8c", preview_id = "ac95881f85ef4751943d6a01ff92ce33" }
 ]
 
+[triggers]
+crons = ["*/1 * * * *"]
+
 [site]
 bucket = ".output/public"
 entry-point = ".output"
-
-[build.upload]
-format = "modules"
-dir = "./workers"
-main = "./watchdog.js"
-
-[[build.upload.rules]]
-type = "ESModule"
-globs = ["**/*.js"]
 
 [build]
 command = "true"
