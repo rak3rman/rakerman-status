@@ -1,4 +1,4 @@
-name = "status"
+name = "watchdog"
 type = "javascript"
 account_id = "287572e2291030d8c5e360fcc593a16b"
 workers_dev = true
@@ -9,10 +9,14 @@ kv_namespaces = [
     { binding = "SERVICES", id = "5f40026cc97041549aae3971b9334a8c", preview_id = "ac95881f85ef4751943d6a01ff92ce33" }
 ]
 
-[site]
-bucket = ".output/public"
-entry-point = ".output"
+[triggers]
+crons = ["*/1 * * * *"]
 
-[build]
-command = "true"
-upload.format = "service-worker"
+[build.upload]
+format = "modules"
+main = "./worker.js"
+
+[[build.upload.rules]]
+type = "ESModule"
+globs = ["**/*.js"]
+
