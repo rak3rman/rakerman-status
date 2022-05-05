@@ -1,4 +1,6 @@
 async function pingServers(event, env) {
+    console.log(event)
+    console.log(env)
     let services = await env.SERVICES.list()
     // Loop through keys and generate payload
     for (const key of services.keys) {
@@ -17,7 +19,7 @@ async function pingServers(event, env) {
 
 const worker = {
     async scheduled(event, env, ctx) {
-        ctx.waitUntil(pingServers(event, env));
+        ctx.waitUntil(await pingServers(event, env));
     },
 };
 
