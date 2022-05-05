@@ -7,7 +7,7 @@ async function pingServers(event, env) {
         // Get request ready
         const init = {
             method: 'GET',
-            redirect: 'manual',
+            redirect: value.redirect ? value.redirect : 'manual',
             // headers: {
             //     'User-Agent': 'cf-worker-status-page',
             // },
@@ -25,6 +25,7 @@ async function pingServers(event, env) {
             last_down: is_up ? value.last_down : Date.now(),
             trip_time: req_time,
             last_err_code: res.status,
+            redirect: value.redirect,
             location: value.location,
             subscribers: value.subscribers,
         }))

@@ -10,7 +10,7 @@ kv_namespaces = [
 ]
 
 [triggers]
-crons = ["*/1 * * * *"]
+crons = ["*/2 * * * *"]
 
 [build.upload]
 format = "modules"

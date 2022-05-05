@@ -3,7 +3,8 @@ export default defineEventHandler(async (event) => {
     // Validate against requested params
     if (!body.name || !body.is_maintain || !body.location) return "Invalid params. token, name, is_maintain, and location is required. subscribers is optional."
     // Validate against token
-    if (body.token !== "#") return "Invalid token, please try again."
+    // @ts-ignore
+    if (body.token !== await SERVICES.get("token", {type: "text"})) return "Invalid token, please try again."
     // @ts-ignore
     await SERVICES.put(body.name, JSON.stringify({
         is_up: false,
@@ -12,6 +13,7 @@ export default defineEventHandler(async (event) => {
         last_down: Date.now(),
         trip_time: "?",
         last_err_code: "???",
+        redirect: "manual",
         location: body.location,
         subscribers: body.subscribers,
     }))
