@@ -7,7 +7,7 @@
     <Meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <Meta name="referrer" content="no-referrer-when-downgrade" />
     <Link href="/css/main.css" rel="stylesheet" />
-    <Link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <Link rel="icon" href="/images/favicon.ico" />
     <Link rel="canonical" :content="url" />
     <Meta property="og:site_name" :content="title" />
     <Meta property="og:title" :content="title" />

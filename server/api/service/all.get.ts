@@ -10,5 +10,9 @@ export default defineEventHandler(async (event) => {
         delete value.subscribers // Remove subscribers from payload
         payload.push(value) // Add service to payload array
     }
+    // Sort services by last_down
+    payload.sort(function(a, b) {
+        return b.last_down - a.last_down;
+    });
     return payload;
 })

@@ -22,22 +22,22 @@
         <div class="mx-auto w-full max-w-md lg:w-[25rem] overflow-auto pb-1.5">
           <div class="overflow-auto lg:pr-3">
             <ul role="list" class="relative z-0 divide-y divide-gray-200 border-b border-t border-gray-200 overflow-auto">
-              <li v-for="service in services" :key="service.name" class="relative py-3 hover:bg-gray-50 snap-center">
+              <li v-for="service in services" :key="service.name" class="relative py-3 hover:bg-gray-50 snap-center" v-if="!pending">
                 <div class="flex items-center justify-between space-x-4">
                   <div class="min-w-0 space-y-2">
                     <div class="flex items-center space-x-3 pl-0.5">
-                    <span :class="[service.is_up === 'true' ? 'bg-green-100' : service.is_maintain === 'true' ? 'bg-yellow-100' : 'bg-red-100', 'h-4 w-4 px-1 rounded-full flex items-center justify-center']">
-                      <span :class="[service.is_up === 'true' ? 'bg-green-400' : service.is_maintain === 'true' ? 'bg-yellow-400' : 'bg-red-400', 'h-2 w-2 rounded-full']" />
-                    </span>
+                      <span :class="[service.is_up === 'true' ? 'bg-green-100' : service.is_maintain === 'true' ? 'bg-yellow-100' : 'bg-red-100', 'h-4 w-4 px-1 rounded-full flex items-center justify-center']">
+                        <span :class="[service.is_up === 'true' ? 'bg-green-400' : service.is_maintain === 'true' ? 'bg-yellow-400' : 'bg-red-400', 'h-2 w-2 rounded-full']" />
+                      </span>
 
                       <span class="block">
-                      <h2 class="text-sm font-medium">
-                        <a :href="'https://' + service.name">
-                          <span class="absolute text-gray-900 inset-0" aria-hidden="true" />
-                          {{ service.name }}
-                        </a>
-                      </h2>
-                    </span>
+                        <h2 class="text-sm font-medium text-gray-700">
+                          <a :href="'https://' + service.name">
+                            <span class="absolute inset-0" aria-hidden="true" />
+                            {{ service.name }}
+                          </a>
+                        </h2>
+                      </span>
                     </div>
                     <div class="relative group flex items-center space-x-2.5" v-if="service.is_up === 'true'">
                       <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
@@ -76,10 +76,17 @@
                     <p class="flex text-gray-500 text-sm space-x-2">
                       <span>{{ service.location }}</span>
                       <span aria-hidden="true">&middot;</span>
-                      <span v-if="service.is_up">Last incident {{ service.uptime }}</span>
-                      <span v-else>Went down {{ service.downtime }}</span>
+                      <span v-if="service.is_up">Last incident {{ DateTime.fromMillis(service.last_down).toRelative() }}</span>
+                      <span v-else>Went down {{ DateTime.fromMillis(service.last_up).toRelative() }}</span>
                     </p>
                   </div>
+                </div>
+              </li>
+              <li class="relative py-3 hover:bg-gray-50 snap-center" v-else>
+                <div class="flex items-center justify-center space-x-4">
+                  <h2 class="text-sm font-medium">
+                    Loading services...
+                  </h2>
                 </div>
               </li>
             </ul>
@@ -104,10 +111,4 @@ import { DateTime } from "luxon";
 import { useLazyFetch } from "nuxt/app";
 // Get services from API
 const { pending, data: services } = await useLazyFetch('/api/service/all');
-// Add params to prettify date
-watch(services, (newService) => {
-  // newService.uptime = DateTime.fromMillis(newService.last_down).toRelative()
-  // newService.downtime = DateTime.fromMillis(newService.last_up).toRelative()
-  console.log(newService)
-})
 </script>
