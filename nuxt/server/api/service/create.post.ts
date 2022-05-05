@@ -11,6 +11,7 @@ export default defineEventHandler(async (event) => {
         last_up: Date.now(),
         last_down: Date.now(),
         trip_time: "?",
+        last_err_code: "???",
         location: body.location,
         subscribers: body.subscribers,
     }))

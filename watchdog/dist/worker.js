@@ -24,6 +24,7 @@ async function pingServers(event, env) {
             last_up: is_up ? Date.now() : value.last_up,
             last_down: is_up ? value.last_down : Date.now(),
             trip_time: req_time,
+            last_err_code: res.status,
             location: value.location,
             subscribers: value.subscribers,
         }))
