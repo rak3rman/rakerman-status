@@ -2,6 +2,7 @@ async function pingServers(event, env) {
     let services = await env.SERVICES.list()
     // Loop through keys and generate payload
     for (const key of services.keys) {
+        console.log(key.name);
         let value = await env.SERVICES.get(key.name, {type: "json"}) // Get service
         await env.SERVICES.put(key.name, JSON.stringify({
             is_up: true,
