@@ -11,15 +11,14 @@ on:
 jobs:
   nuxt:
     runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        working-directory: ./nuxt
 
     strategy:
       matrix:
         os: [ ubuntu-latest ]
         node: [ 14 ]
-
-    defaults:
-      run:
-        working-directory: ./nuxt
 
     steps:
       - uses: actions/setup-node@v1
@@ -51,15 +50,14 @@ jobs:
 
   watchdog:
     runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        working-directory: watchdog
 
     strategy:
       matrix:
         os: [ ubuntu-latest ]
         node: [ 14 ]
-
-    defaults:
-      run:
-        working-directory: ./watchdog
 
     steps:
       - uses: actions/setup-node@v1
