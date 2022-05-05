@@ -17,6 +17,7 @@ export default defineNuxtPlugin(() => {
                 subscribers: value.subscribers,
             }))
         }
+        return true
     }
     addEventListener('scheduled', event => {
         // @ts-ignore
