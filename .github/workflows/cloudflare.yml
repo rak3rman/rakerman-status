@@ -53,7 +53,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     defaults:
       run:
-        working-directory: watchdog
+        working-directory: ./watchdog
 
     strategy:
       matrix:
