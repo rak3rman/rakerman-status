@@ -13,6 +13,15 @@ kv_namespaces = [
 bucket = ".output/public"
 entry-point = ".output"
 
+[build.upload]
+format = "modules"
+dir = "./workers"
+main = "./watchdog.js"
+
+[[build.upload.rules]]
+type = "ESModule"
+globs = ["**/*.js"]
+
 [build]
 command = "true"
 upload.format = "service-worker"
