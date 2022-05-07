@@ -74,8 +74,8 @@
                       <span class="relative text-sm text-gray-500"> {{ service.location }} </span>
                     </p>
                     <p class="flex text-gray-500 text-sm space-x-2">
-                      <span v-if="service.is_up">Last incident {{ DateTime.fromMillis(service.last_down).toRelative() }}</span>
-                      <span v-else>Went down {{ DateTime.fromMillis(service.last_up).toRelative() }}</span>
+                      <span v-if="service.is_up">Last incident {{ DateTime.fromMillis(parseInt(service.last_down)).toRelative() }}</span>
+                      <span v-else>Went down {{ DateTime.fromMillis(parseInt(service.last_up)).toRelative() }}</span>
                     </p>
                   </div>
                 </div>
@@ -105,8 +105,8 @@
 </template>
 
 <script setup>
-import { DateTime } from "luxon";
-import { useLazyFetch } from "nuxt/app";
+import { DateTime } from 'luxon'
+import { useLazyFetch } from 'nuxt/app'
 // Get services from API
-const { pending, data: services } = await useLazyFetch('/api/service/all');
+let { pending, data: services } = await useLazyFetch('/api/service/all')
 </script>
