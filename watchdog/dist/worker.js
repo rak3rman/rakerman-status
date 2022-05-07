@@ -15,8 +15,8 @@ async function pingServers(event, env) {
                 redirect: 'follow',
             })
             const req_time = Math.round(Date.now() - req_start)
-            const res_ok = response.status === 200 && response.url !== "https://status.rakerman.com"
-            const res_code = response.url === "https://status.rakerman.com" ?  500 : response.status
+            const res_ok = response.status === 200 && (response.url !== "https://status.rakerman.com" || key.name === "status.rakerman.com")
+            const res_code = (response.url === "https://status.rakerman.com" && key.name !== "status.rakerman.com") ? 500 : response.status
             // Update service details to CF KV if is_up changed
             if (orig_serv.is_up !== res_ok) {
                 await env.SERVICES.put(key.name, JSON.stringify({
