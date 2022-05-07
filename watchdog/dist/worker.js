@@ -5,7 +5,7 @@ async function pingServers(event, env) {
     // Loop through keys and generate payload
     for (const key of services.keys) {
         // We are looking for a service, not a payload
-        if (key.name !== "payload") {
+        if (key.name !== "payload" && key.name !== "token") {
             // Get service details from CF KV
             let orig_serv = await env.SERVICES.get(key.name, {type: 'json'})
             // Ping server
