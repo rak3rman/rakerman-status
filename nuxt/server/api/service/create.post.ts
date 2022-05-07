@@ -7,13 +7,8 @@ export default defineEventHandler(async (event) => {
     if (body.token !== await SERVICES.get("token", {type: "text"})) return "Invalid token, please try again."
     // @ts-ignore
     await SERVICES.put(body.name, JSON.stringify({
-        is_up: false,
         is_maintain: (body.is_maintain === 'true'),
-        last_up: Date.now(),
-        last_down: Date.now(),
-        trip_time: "?",
-        last_err_code: "???",
-        redirect: "manual",
+        last_flip: Date.now(),
         location: body.location,
         subscribers: body.subscribers,
     }))
