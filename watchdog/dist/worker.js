@@ -16,6 +16,7 @@ async function pingServers(event, env) {
             })
             const req_time = Math.round(Date.now() - req_start)
             const res_ok = response.status === 200 && response.url !== "https://status.rakerman.com"
+            const res_code = response.url === "https://status.rakerman.com" ?  500 : response.status
             // Update service details to CF KV if is_up changed
             if (orig_serv.is_up !== res_ok) {
                 await env.SERVICES.put(key.name, JSON.stringify({
@@ -34,7 +35,7 @@ async function pingServers(event, env) {
                 last_up: res_ok ? Date.now() : orig_serv.last_flip,
                 last_down: res_ok ? orig_serv.last_flip : Date.now(),
                 trip_time: req_time,
-                last_err_code: response.status,
+                last_err_code: res_code,
                 location: orig_serv.location,
             })
         }
