@@ -12,29 +12,31 @@ async function pingServers(event, env) {
             const req_start = Date.now()
             const response = await fetch('https://' + key.name, {
                 method: 'GET',
-                redirect: orig_serv.redirect ? orig_serv.redirect : 'manual',
+                redirect: 'follow',
             })
             const req_time = Math.round(Date.now() - req_start)
-            const is_up = response.status === 200
-            // Update existing service with updated data
-            let updated_serv = {
-                is_up: is_up,
+            const res_ok = response.status === 200 && response.url !== "https://status.rakerman.com"
+            // Update service details to CF KV if is_up changed
+            if (orig_serv.is_up !== res_ok) {
+                await env.SERVICES.put(key.name, JSON.stringify({
+                    is_up: res_ok,
+                    is_maintain: orig_serv.is_maintain,
+                    last_flip: Date.now(),
+                    location: orig_serv.location,
+                    subscribers: orig_serv.subscribers,
+                }))
+            }
+            // Push into services payload
+            payload.push({
+                name: key.name,
+                is_up: res_ok,
                 is_maintain: orig_serv.is_maintain,
-                last_up: is_up ? Date.now() : orig_serv.last_up,
-                last_down: is_up ? orig_serv.last_down : Date.now(),
+                last_up: res_ok ? Date.now() : orig_serv.last_flip,
+                last_down: res_ok ? orig_serv.last_flip : Date.now(),
                 trip_time: req_time,
                 last_err_code: response.status,
-                redirect: orig_serv.redirect,
                 location: orig_serv.location,
-                subscribers: orig_serv.subscribers,
-            }
-            // Update service details to CF KV
-            await env.SERVICES.put(key.name, JSON.stringify(updated_serv))
-            // Push into services payload
-            updated_serv.name = key.name // Add name to payload
-            delete updated_serv.redirect // Remove redirect method from payload
-            delete updated_serv.subscribers // Remove subscribers from payload
-            payload.push(updated_serv) // Add service to payload array
+            })
         }
     }
     // Sort services payload by last_down
