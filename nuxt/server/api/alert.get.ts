@@ -8,10 +8,10 @@ export default defineEventHandler(async (event) => {
     let dt1 = DateTime.fromMillis(alert.start)
     let dt2 = DateTime.now().plus({ hours: 12 })
     if (dt1 < dt2) {
-        payload = "let raf_alert_tag = \"" + alert._id + "\";\n" +
+        payload = "let raf_alert_tag = \"" + alert.start + "\";\n" +
             "window.onload = function() {\n" +
-            "  let raf_sd = new Date(\"" + alert.start + "\");\n" +
-            "  let raf_ed = new Date(\"" + alert.end + "\");\n" +
+            "  let raf_sd = new Date(\"" + alert.start + "\");console.log(raf_sd);\n" +
+            "  let raf_ed = new Date(\"" + alert.end + "\");console.log(raf_ed);\n" +
             "  function formatAMPM(date) {\n" +
             "    let hours = date.getHours();\n" +
             "    let ampm = hours >= 12 ? 'pm' : 'am';\n" +
@@ -29,15 +29,11 @@ export default defineEventHandler(async (event) => {
             "      document.getElementById(\"raf_alert_hide\").className = \"-mr-1 flex p-2 rounded-md hover:bg-" + (alert.maintain ? "red" : "yellow") + "-600 focus:outline-none focus:ring-2 focus:ring-white sm:-mr-2 bg-transparent bg-none border-none\";\n" +
             "    }\n" +
             "  })();\n" +
-            "};" +
+            "};\n" +
             "function hide_raf_alert() {\n" +
             "  window.localStorage.setItem('raf_alert_' + raf_alert_tag, true);\n" +
             "  document.getElementById(\"raf_alert_banner\").className = \"hidden\";\n" +
             "}\n"
     }
     return payload
-    // Send response
-    // res.header("Access-Control-Allow-Origin", "*");
-    // res.type('.js');
-    // res.send(payload);
 })
