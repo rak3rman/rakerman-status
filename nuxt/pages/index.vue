@@ -1,3 +1,10 @@
+<script setup>
+import { DateTime } from 'luxon'
+import { useLazyFetch } from 'nuxt/app'
+// Get services from API
+let { pending, data: services } = await useLazyFetch('/api/service')
+</script>
+
 <template>
   <div class="h-full">
     <RAFBanner />
@@ -103,10 +110,3 @@
     </div>
   </div>
 </template>
-
-<script setup>
-import { DateTime } from 'luxon'
-import { useLazyFetch } from 'nuxt/app'
-// Get services from API
-let { pending, data: services } = await useLazyFetch('/api/service/all')
-</script>

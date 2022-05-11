@@ -12,5 +12,5 @@ export default defineEventHandler(async (event) => {
         location: body.location,
         subscribers: body.subscribers,
     }))
-    return "Right on! Data will propagate across the network over the next minute."
+    return "Service added! Data will propagate across the network over the next minute."
 })

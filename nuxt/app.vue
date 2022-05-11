@@ -26,6 +26,7 @@
       <NuxtPage/>
     </NuxtLayout>
   </div>
+  <Script src="/api/alert" />
 </template>
 
 <script>
