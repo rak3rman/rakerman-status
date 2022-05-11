@@ -5,8 +5,8 @@ export default defineEventHandler(async (event) => {
     let alert = await SERVICES.get('alert', {type: 'json'})
     if (!alert) return ""
     let payload = ""
-    let dt1 = new DateTime.fromMillis(alert.start)
-    let dt2 = new DateTime.now().plus({ hours: 12 })
+    let dt1 = DateTime.fromMillis(alert.start)
+    let dt2 = DateTime.now().plus({ hours: 12 })
     if (dt1 < dt2) {
         payload = "let raf_alert_tag = \"" + alert._id + "\";\n" +
             "window.onload = function() {\n" +
