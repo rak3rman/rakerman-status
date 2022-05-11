@@ -10,8 +10,8 @@ export default defineEventHandler(async (event) => {
     if (dt1 < dt2) {
         payload = "let raf_alert_tag = \"" + alert.start + "\";\n" +
             "window.onload = function() {\n" +
-            "  let raf_sd = new Date(\"" + alert.start + "\");console.log(raf_sd);\n" +
-            "  let raf_ed = new Date(\"" + alert.end + "\");console.log(raf_ed);\n" +
+            "  let raf_sd = new Date(" + alert.start + ");console.log(raf_sd);\n" +
+            "  let raf_ed = new Date(" + alert.end + ");console.log(raf_ed);\n" +
             "  function formatAMPM(date) {\n" +
             "    let hours = date.getHours();\n" +
             "    let ampm = hours >= 12 ? 'pm' : 'am';\n" +
