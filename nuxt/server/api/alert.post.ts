@@ -8,8 +8,8 @@ export default defineEventHandler(async (event) => {
     // @ts-ignore
     await SERVICES.put("alert", JSON.stringify({
         is_maintain: (body.is_maintain === 'true'),
-        start: body.start,
-        end: body.end
-    }), {expiration: body.end})
+        start: parseInt(body.start),
+        end: parseInt(body.end)
+    }), {expiration: parseInt(body.end) / 1000})
     return "Alert added! Data will propagate across the network over the next minute."
 })
