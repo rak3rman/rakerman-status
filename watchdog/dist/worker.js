@@ -1,27 +1,37 @@
-async function pingServers(event, env) {
+async function ping_server(name) {
+    // Ping server
+    const req_start = Date.now()
+    const response = await fetch('https://' + name, {
+        method: 'GET',
+        redirect: 'follow',
+    })
+    // Return the data we want
+    return {
+        req_time: Math.round(Date.now() - req_start),
+        res_ok: response.status === 200 && (response.url !== "https://status.rakerman.com" || name === "status.rakerman.com"),
+        res_code: (response.url === "https://status.rakerman.com" && name !== "status.rakerman.com") ? 500 : response.status
+    }
+}
+
+async function ping_all(event, env) {
     // Get list of service keys from CF KV
     let services = await env.SERVICES.list()
     let payload = [];
     // Loop through keys and generate payload
     for (const key of services.keys) {
         // We are looking for a service, not a payload
-        let skips = ["payload", "token", "alert"]
+        const skips = ["payload", "token", "alert"]
         if (!skips.includes(key.name)) {
             // Get service details from CF KV
-            let orig_serv = await env.SERVICES.get(key.name, {type: 'json'})
+            const orig_serv = await env.SERVICES.get(key.name, {type: 'json'})
             // Ping server
-            const req_start = Date.now()
-            const response = await fetch('https://' + key.name, {
-                method: 'GET',
-                redirect: 'follow',
-            })
-            const req_time = Math.round(Date.now() - req_start)
-            const res_ok = response.status === 200 && (response.url !== "https://status.rakerman.com" || key.name === "status.rakerman.com")
-            const res_code = (response.url === "https://status.rakerman.com" && key.name !== "status.rakerman.com") ? 500 : response.status
+            let ping_data = await ping_server(key.name)
+            // Sanity check
+            if (orig_serv.is_up !== ping_data.res_ok) ping_data = await ping_server(key.name)
             // Update service details to CF KV if is_up changed
-            if (orig_serv.is_up !== res_ok) {
+            if (orig_serv.is_up !== ping_data.res_ok) {
                 await env.SERVICES.put(key.name, JSON.stringify({
-                    is_up: res_ok,
+                    is_up: ping_data.res_ok,
                     is_maintain: orig_serv.is_maintain,
                     last_flip: Date.now(),
                     location: orig_serv.location,
@@ -31,12 +41,12 @@ async function pingServers(event, env) {
             // Push into services payload
             payload.push({
                 name: key.name,
-                is_up: res_ok,
+                is_up: ping_data.res_ok,
                 is_maintain: orig_serv.is_maintain,
-                last_up: res_ok ? Date.now() : (orig_serv.is_up !== res_ok ? Date.now() : orig_serv.last_flip),
-                last_down: res_ok ? (orig_serv.is_up !== res_ok ? Date.now() : orig_serv.last_flip) : Date.now(),
-                trip_time: req_time,
-                last_err_code: res_code,
+                last_up: ping_data.res_ok ? Date.now() : (orig_serv.is_up !== ping_data.res_ok ? Date.now() : orig_serv.last_flip),
+                last_down: ping_data.res_ok ? (orig_serv.is_up !== ping_data.res_ok ? Date.now() : orig_serv.last_flip) : Date.now(),
+                trip_time: ping_data.req_time,
+                last_err_code: ping_data.res_code === 200 ? orig_serv.last_err_code : ping_data.res_code,
                 location: orig_serv.location,
             })
         }
@@ -53,7 +63,7 @@ async function pingServers(event, env) {
 
 const worker = {
     async scheduled(event, env, ctx) {
-        ctx.waitUntil(await pingServers(event, env));
+        ctx.waitUntil(await ping_all(event, env));
     },
 };
 

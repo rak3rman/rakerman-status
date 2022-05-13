@@ -100,7 +100,7 @@ let { pending, data: services } = await useLazyFetch('/api/service')
 
         <div class="mx-auto w-full max-w-md lg:w-[25rem] flow-root pr-3">
           <a href="https://github.com/rak3rman/rakerman-status" class="mt-2 text-sm text-gray-400 float-left">rak3rman/rakerman-status</a>
-          <p class="mt-2 text-sm text-gray-400 float-right">v2.2.0</p>
+          <p class="mt-2 text-sm text-gray-400 float-right">v2.2.1</p>
         </div>
 
       </div>
