@@ -1,5 +1,5 @@
 name = "status"
-main = ".output/server/index.mjs"
+main = "./.output/server/index.mjs"
 account_id = "287572e2291030d8c5e360fcc593a16b"
 workers_dev = true
 compatibility_date = "2022-05-04"
@@ -8,4 +8,4 @@ compatibility_date = "2022-05-04"
 command = "true"
 
 [site]
-bucket = ".output/public"
+bucket = "./.output/public"
