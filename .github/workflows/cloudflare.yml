@@ -11,14 +11,11 @@ on:
 jobs:
   nuxt:
     runs-on: ${{ matrix.os }}
-    defaults:
-      run:
-        working-directory: ./nuxt
 
     strategy:
       matrix:
         os: [ ubuntu-latest ]
-        node: [ 14 ]
+        node: [ 16 ]
 
     steps:
       - uses: actions/setup-node@v1
@@ -28,26 +25,19 @@ jobs:
       - name: Checkout
         uses: actions/checkout@master
 
-      - name: Cache node_modules
-        uses: actions/cache@v2
-        with:
-          path: node_modules
-          key: ${{ matrix.os }}-node-v${{ matrix.node }}-deps-${{ hashFiles(format('{0}{1}', github.workspace, '/yarn.lock')) }}
-
       - name: Install Dependencies
-        if: steps.cache.outputs.cache-hit != 'true'
-        run: yarn
+        run: npm install
 
       - name: Build
-        run: yarn build
+        run: npm run build
         env:
           NITRO_PRESET: cloudflare
 
       - name: Publish to Cloudflare
-        uses: cloudflare/wrangler-action@1.3.0
+        uses: cloudflare/wrangler-action@2.0.0
         with:
           apiToken: ${{ secrets.CF_API_TOKEN }}
-          workingDirectory: nuxt
+
 
   watchdog:
     runs-on: ${{ matrix.os }}
