@@ -46,7 +46,7 @@ async function ping_all(event, env) {
                 last_up: ping_data.res_ok ? Date.now() : (orig_serv.is_up !== ping_data.res_ok ? Date.now() : orig_serv.last_flip),
                 last_down: ping_data.res_ok ? (orig_serv.is_up !== ping_data.res_ok ? Date.now() : orig_serv.last_flip) : Date.now(),
                 trip_time: ping_data.req_time,
-                last_err_code: ping_data.res_code === 200 ? orig_serv.last_err_code : ping_data.res_code,
+                last_err_code: ping_data.res_code,
                 location: orig_serv.location,
             })
         }
