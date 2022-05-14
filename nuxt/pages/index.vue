@@ -13,10 +13,10 @@ let { pending, data: services } = await useLazyFetch('/api/service')
 
         <div class="mx-auto w-full max-w-md lg:w-[25rem] pb-4 ">
           <img class="h-8 w-auto" src="/images/rakerman-logo-dark.png" />
-          <h2 class="mt-6 text-3xl font-extrabold text-gray-900" v-if="services.filter(s => s.is_up).length === 0">All services operational.</h2>
-          <h2 class="mt-6 text-3xl font-extrabold text-gray-900" v-else-if="services.filter(s => s.is_up).length > 0 && services.filter(s => s.is_maintain).length > 0">Scheduled <br>maintenance underway.</h2>
+          <h2 class="mt-6 text-3xl font-extrabold text-gray-900" v-if="services.filter(s => !s.is_up).length === 0">All services operational.</h2>
+          <h2 class="mt-6 text-3xl font-extrabold text-gray-900" v-else-if="services.filter(s => !s.is_up && !s.is_maintain).length === 0">Scheduled <br>maintenance underway.</h2>
           <h2 class="mt-6 text-3xl font-extrabold text-gray-900" v-else>Houston, <br>we have a problem.</h2>
-          <p class="mt-2 text-sm text-gray-600" v-if="services.filter(s => s.is_up).length === 0">
+          <p class="mt-2 text-sm text-gray-600" v-if="services.filter(s => !s.is_up).length === 0">
             Having problems with a service?
             {{ ' ' }}
             <a href="https://www.rakerman.com/contact" class="font-medium" style="color: #586CB2"> Let us know. </a>
