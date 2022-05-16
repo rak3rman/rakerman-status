@@ -23,7 +23,7 @@ export default defineEventHandler(async (event) => {
             "    if (!window.localStorage.getItem('raf_alert_' + raf_alert_tag)) {\n" +
             "      document.getElementById(\"raf_alert_title\").innerHTML = \"" + (alert.is_maintain ? "Site Maintenance" : "Service Interruption") + "\";\n" +
             "      document.getElementById(\"raf_alert_desc\").innerHTML = \"" + (alert.is_maintain ? "Expect extended downtime on all services" : "Expect minor interruptions on select services") + "\";\n" +
-            "      document.getElementById(\"raf_alert_time\").innerHTML = raf_sd.toLocaleString('en-us', { month: 'short' }) + \" \" + raf_sd.getDate() + (raf_sd.getDate() > 0 ? ['th', 'st', 'nd', 'rd'][(raf_sd.getDate() > 3 && raf_sd.getDate() < 21) || raf_sd.getDate() % 10 > 3 ? 0 : raf_sd.getDate() % 10] : '') + \", \" + formatAMPM(raf_sd) + \"-\" + formatAMPM(raf_ed)\n" +
+            "      document.getElementById(\"raf_alert_time\").innerHTML = raf_sd.toLocaleString('en-us', { month: 'short' }) + \" \" + raf_sd.getDate() + \", \" + formatAMPM(raf_sd) + \"-\" + formatAMPM(raf_ed)\n" +
             "      document.getElementById(\"raf_alert_banner\").className = \"bg-" + (alert.is_maintain ? "red" : "yellow") + "-500\";\n" +
             "      document.getElementById(\"raf_alert_icon\").className = \"flex p-2 rounded-lg bg-" + (alert.is_maintain ? "red" : "yellow") + "-600\";\n" +
             "      document.getElementById(\"raf_alert_hide\").className = \"-mr-1 flex p-2 rounded-md hover:bg-" + (alert.is_maintain ? "red" : "yellow") + "-600 focus:outline-none focus:ring-2 focus:ring-white sm:-mr-2 bg-transparent bg-none border-none\";\n" +
