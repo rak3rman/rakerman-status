@@ -15,9 +15,9 @@
     <Meta property="og:description" :content="desc" />
     <Meta property="og:type" content="website" />
     <Meta property="og:url" :content="url" />
-    <Meta property="og:image" :content="url + 'img/spread.jpg'" />
-    <Meta property="og:image:width" content="2000" />
-    <Meta property="og:image:height" content="2000" />
+    <Meta property="og:image" content="https://imagedelivery.net/5zM6Rdl2uV8Hmr9WxRh20g/aeba9222-aac7-48d8-8328-ff3f1c3da400/md" />
+    <Meta property="og:image:width" content="600" />
+    <Meta property="og:image:height" content="450" />
   </Head>
   </Html>
   <Body class="h-full" />
@@ -31,7 +31,7 @@
 
 <script>
 const title = "RAkerman Status"
-const desc = "A real-time status monitor for RAkerman services"
+const desc = "A globally-distributed, real-time status monitor for all RAkerman services"
 const url = "https://status.rakerman.com/"
 
 export default {
