@@ -61,11 +61,9 @@ async function ping_all(event, env) {
             let aa = a.name.split(".")
             let bb = b.name.split(".")
             if (aa[aa.length-2] === bb[bb.length-2]) {
-                console.log("v2 Compare " + b.name + " to " + a.name)
-                return b.name.localeCompare(a.name);
+                return a.name.localeCompare(b.name);
             }
-            console.log("v2 Compare " + aa[aa.length-2] + " to " + bb[bb.length-2])
-            return bb[bb.length-2].localeCompare(aa[aa.length-2]);
+            return aa[aa.length-2].localeCompare(bb[bb.length-2]);
         });
     }
     // Update services payload to CF KV
