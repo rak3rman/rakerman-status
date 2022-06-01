@@ -60,7 +60,7 @@ async function ping_all(event, env) {
         payload.sort(function(a, b) {
             let aa = a.name.split(".")
             let bb = b.name.split(".")
-            console.log("Compare " + aa[aa.length-2] + " to " + bb[bb.length-2])
+            console.log("v1 Compare " + aa[aa.length-2] + " to " + bb[bb.length-2])
             if (aa[aa.length-2] === bb[bb.length-2]) {
                 return b.name - a.name
             }
