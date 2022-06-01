@@ -52,6 +52,7 @@ async function ping_all(event, env) {
         }
     }
     // Sort services payload by last_down
+    console.log(payload.filter(serv => !serv.is_up).length)
     if (payload.filter(serv => !serv.is_up).length > 0) {
         payload.sort(function(a, b) {
             return b.last_down - a.last_down;
