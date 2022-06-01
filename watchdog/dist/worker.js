@@ -52,9 +52,15 @@ async function ping_all(event, env) {
         }
     }
     // Sort services payload by last_down
-    payload.sort(function(a, b) {
-        return b.last_down - a.last_down;
-    });
+    if (payload.filter(serv => !serv.is_up).length > 0) {
+        payload.sort(function(a, b) {
+            return b.last_down - a.last_down;
+        });
+    } else {
+        payload.sort(function(a, b) {
+            return b.name - a.name;
+        });
+    }
     // Update services payload to CF KV
     await env.SERVICES.put('payload', JSON.stringify(payload))
     // Return that we finished
