@@ -52,14 +52,15 @@ async function ping_all(event, env) {
         }
     }
     // Sort services payload by last_down
-    console.log(payload.filter(serv => !serv.is_up).length)
     if (payload.filter(serv => !serv.is_up).length > 0) {
         payload.sort(function(a, b) {
             return b.last_down - a.last_down;
         });
     } else {
         payload.sort(function(a, b) {
-            return b.name - a.name;
+            let aa = a.name.split(".")
+            let bb = b.name.split(".")
+            return bb[bb.length-2] - aa[aa.length-2];
         });
     }
     // Update services payload to CF KV
