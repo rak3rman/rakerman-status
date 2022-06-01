@@ -60,6 +60,7 @@ async function ping_all(event, env) {
         payload.sort(function(a, b) {
             let aa = a.name.split(".")
             let bb = b.name.split(".")
+            console.log("Compare " + aa + " to " + bb)
             return bb[bb.length-2] - aa[aa.length-2];
         });
     }
