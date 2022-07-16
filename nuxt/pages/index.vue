@@ -1,20 +1,3 @@
-<script setup>
-import { DateTime } from 'luxon'
-import { useLazyFetch } from 'nuxt/app'
-// Get services from API
-let { pending, data: services } = await useLazyFetch('/api/service')
-// Possible background images
-const images = [
-  'https://imagedelivery.net/5zM6Rdl2uV8Hmr9WxRh20g/fa35b458-67ec-4711-0256-9f68535cbd00/xl',
-  'https://imagedelivery.net/5zM6Rdl2uV8Hmr9WxRh20g/b5bd8f82-3b48-4766-18a9-3dc686c77700/xl',
-  'https://imagedelivery.net/5zM6Rdl2uV8Hmr9WxRh20g/29fc49b8-6e47-4192-ca52-5025b5dae300/xl',
-  'https://imagedelivery.net/5zM6Rdl2uV8Hmr9WxRh20g/ae99ca49-5cb7-4794-3000-2065e3d94100/xl',
-  'https://imagedelivery.net/5zM6Rdl2uV8Hmr9WxRh20g/9036aeb5-ffa0-49ef-f5e3-3d40ac6d3800/xl',
-  'https://imagedelivery.net/5zM6Rdl2uV8Hmr9WxRh20g/69564523-4f8b-47ab-ad8c-b50426a0bd00/xl',
-  'https://imagedelivery.net/5zM6Rdl2uV8Hmr9WxRh20g/aeba9222-aac7-48d8-8328-ff3f1c3da400/xl',
-]
-</script>
-
 <template>
   <div class="h-full">
     <RAFBanner />
@@ -122,8 +105,22 @@ const images = [
 
       </div>
       <div class="hidden lg:block relative w-0 flex-1">
-        <img class="absolute inset-0 h-full w-full object-cover" :src="images[Math.floor(Math.random()*images.length)]" alt="" />
+        <img class="absolute inset-0 h-full w-full object-cover" :src="'https://imagedelivery.net/5zM6Rdl2uV8Hmr9WxRh20g/' + images[Math.floor(Math.random()*images.length)] + '/2xl'" alt="" />
       </div>
     </div>
   </div>
 </template>
+
+<script setup>
+import { DateTime } from 'luxon'
+import { useLazyFetch } from 'nuxt/app'
+// Get services from API
+let { pending, data: services } = await useLazyFetch('/api/service')
+// Possible background images
+const images = [
+  'fa35b458-67ec-4711-0256-9f68535cbd00',
+  '29fc49b8-6e47-4192-ca52-5025b5dae300',
+  'ae99ca49-5cb7-4794-3000-2065e3d94100',
+  'aeba9222-aac7-48d8-8328-ff3f1c3da400',
+]
+</script>
