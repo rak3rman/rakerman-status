@@ -22,7 +22,7 @@ export default defineEventHandler(async (event) => {
             "  (function () {\n" +
             "    if (!window.localStorage.getItem('raf_alert_' + raf_alert_tag)) {\n" +
             "      document.getElementById(\"raf_alert_title\").innerHTML = \"" + (alert.is_maintain ? "Site Maintenance" : "Service Interruption") + "\";\n" +
-            "      document.getElementById(\"raf_alert_desc\").innerHTML = \"" + (alert.is_maintain ? "Expect extended downtime on all services" : "Expect minor interruptions on select services") + "\";\n" +
+            "      document.getElementById(\"raf_alert_desc\").innerHTML = \"" + (alert.is_maintain ? "Expect extended downtime on select services" : "Expect minor interruptions on select services") + "\";\n" +
             "      document.getElementById(\"raf_alert_time\").innerHTML = raf_sd.toLocaleString('en-us', { month: 'short' }) + \" \" + raf_sd.getDate() + \", \" + formatAMPM(raf_sd) + \"-\" + formatAMPM(raf_ed)\n" +
             "      document.getElementById(\"raf_alert_banner\").className = \"bg-" + (alert.is_maintain ? "red" : "yellow") + "-500\";\n" +
             "      document.getElementById(\"raf_alert_icon\").className = \"flex p-2 rounded-lg bg-" + (alert.is_maintain ? "red" : "yellow") + "-600\";\n" +
