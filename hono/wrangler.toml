@@ -1,0 +1,8 @@
+name = "author-hono"
+account_id = "287572e2291030d8c5e360fcc593a16b"
+compatibility_date = "2023-01-01"
+
+kv_namespaces = [
+    { binding = "AUTH0_USERNAME", id = "28244f678f0944ec8f5377fd171c998b", preview_id = "4ef3e8a5ce844ff78b037c13ecb16341" },
+    { binding = "USERS", id = "e32b88bf4e144149af0401504e12bc86", preview_id = "4ca54667db03439a966bb40e796192aa" }
+]
