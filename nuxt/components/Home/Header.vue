@@ -12,7 +12,8 @@
 
         <p class="mt-2 text-sm text-gray-600" v-html="
             props.pending ? 'Loading services...' :
-            props.services === null ? 'Failed to communicate with the API server. Try refreshing the page in a few moments.' :
+            props.services === null ? 'Failed API communication. Try refreshing in a few moments.' :
+            props.services === {} ? 'Ooops, no services found :-)' :
             props.services.filter(s => !s.is_up).length === 0 ? 'Everything is running as expected.' :
             'Sit tight. We are working hard on a fix.'
         "/>
