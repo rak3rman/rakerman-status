@@ -24,8 +24,8 @@ export default defineNuxtConfig({
             },
             auth0: {
                 domain: 'rakerman.us.auth0.com',
-                client_id: 'khPGZMLGaERG1xGRncMBkW4Y5pLrFBMy',
-                redirect_url: '/dashboard',
+                client_id: process.env.NODE_ENV == 'production' ? 'khPGZMLGaERG1xGRncMBkW4Y5pLrFBMy' : 'RCVEiy1ybAm6XOrD0cxG2U486q5kHoqw',
+                redirect_url: '/services',
             },
             gitMasterTag: gitDescribeSync().hash,
             version: '2.3.0'
