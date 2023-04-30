@@ -1,4 +1,4 @@
-name = "author-nuxt"
+name = "rakerman-status-nuxt"
 main = ".output/server/index.mjs"
 account_id = "287572e2291030d8c5e360fcc593a16b"
 workers_dev = true
