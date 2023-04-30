@@ -3,7 +3,6 @@ import { getAuth0 } from "~/utils/getAuth0";
 
 export const useAuth0 = async (query: LocationQuery, enforce: Boolean) => {
   let { auth, isAuth, token, userAuth0, userAuthor } = await getAuth0();
-  console.log(auth, isAuth, token, userAuth0, userAuthor);
   // Whenever this function is called, check if user is authenticated
   if (!(await auth.isAuthenticated())) {
     // NOT authorized, lets see if they are in a callback from Auth0

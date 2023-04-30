@@ -1,12 +1,11 @@
-name = "watchdog"
+name = "rakerman-status-watchdog"
 type = "javascript"
 account_id = "287572e2291030d8c5e360fcc593a16b"
 workers_dev = true
-route = ""
-zone_id = ""
 compatibility_date = "2022-05-04"
 kv_namespaces = [
-    { binding = "SERVICES", id = "5f40026cc97041549aae3971b9334a8c", preview_id = "ac95881f85ef4751943d6a01ff92ce33" }
+    { binding = "SERVICES", id = "71690c8d4bb34320a41e3e797181aa19", preview_id = "01a821a4fb914053be3334bbc2ec24e6" },
+    { binding = "CACHED", id = "54bf8c4a15d74dcf8b36bae3f0176982", preview_id = "d60a43ea907e4346afef3b5873bf5c51" },
 ]
 
 [triggers]
@@ -14,9 +13,8 @@ crons = ["*/2 * * * *"]
 
 [build.upload]
 format = "modules"
-main = "./worker.js"
+main = "./index.js"
 
 [[build.upload.rules]]
 type = "ESModule"
 globs = ["**/*.js"]
-

@@ -1,5 +1,6 @@
 <template>
   <div class="lg:min-w-0 lg:flex-1">
+    {{ services }}
     <div
       class="border-b border-t border-gray-200 pb-4 pl-4 pr-6 pt-4 sm:pl-6 lg:pl-8 xl:border-t-0 xl:pl-6 xl:pt-6"
     >
@@ -185,4 +186,18 @@ const projects = [
     last_err_code: 524,
   },
 ];
+
+const config = useRuntimeConfig();
+
+let { auth, isAuth, token, userAuth0, userAuthor } = await getAuth0();
+
+const { data: services } = await useFetch("/api/services", {
+  method: "GET",
+  server: false, // not to Nitro
+  baseURL: config.urlBase.back, // backend url
+  headers: {
+    // auth headers
+    Authorization: "Bearer " + token,
+  },
+});
 </script>

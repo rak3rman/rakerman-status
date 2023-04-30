@@ -19,8 +19,9 @@ module.exports = {
         default: {
           primary: "#FFFFFF", // Primary theme color (logo, buttons)
           secondary: "#586CB2", // Secondary theme color (alt icons)
-          accent: "#CCCCCC",
-          neutral: "#F1F3F9",
+          "secondary-content": "#FFFFFF",
+          accent: "#000000",
+          neutral: "#000000",
           success: "#059669",
           error: "#ef4444",
         },
