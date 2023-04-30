@@ -41,7 +41,7 @@ definePageMeta({
 const config = useRuntimeConfig();
 
 // Create a new instance of Auth0 Client
-let { auth, isAuth, user, token } = await getAuth0();
+// let { auth, isAuth, user, token } = await getAuth0();
 
 // await useFetch('/api/auth0/user', {
 //     method: 'GET',
