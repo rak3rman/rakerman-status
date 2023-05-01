@@ -200,6 +200,7 @@ let tenant = reactive({
   domain: "",
   title: "",
   usernames: [userAuthor.value.profile.username],
+  images: [],
   logo: "",
 });
 

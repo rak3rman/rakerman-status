@@ -35,7 +35,7 @@ const images = [
 ];
 
 // Get services from API
-let { pending, data: tenant } = await useLazyFetch("/api/services", {
+let { pending, data: tenant } = await useLazyFetch("/api/services/cached", {
   method: "GET",
   server: false, // not to Nitro
   baseURL: config.urlBase.back, // backend url

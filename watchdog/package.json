@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "dev": "wrangler dev src/index.js",
+    "dev": "wrangler dev src/index.js --test-scheduled",
     "deploy": "wrangler publish src/index.js"
   },
   "devDependencies": {

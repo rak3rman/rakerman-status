@@ -57,7 +57,6 @@ app.use("/api/*", async (c, next) => {
 
 const tenantSchema = z.object({
   domain: z.string().trim(),
-  usernames: z.array(z.string()),
   title: z
     .string()
     .trim()
@@ -67,6 +66,8 @@ const tenantSchema = z.object({
     .min(6, { message: "Title must be 6-24 characters long" })
     .max(24, { message: "Title must be 6-24 characters long" }),
   logo: z.string().url(),
+  usernames: z.array(z.string()),
+  images: z.array(z.string().url()).max(5),
 });
 
 const serviceSchema = z.object({
@@ -190,9 +191,10 @@ app.get("/api/tenants", async (c) => {
  * @returns {json} payload - tenant
  *
  * @returns {string} payload.domain - domain of tenant, key in KV
- * @returns {string[]} payload.usernames[] - admin usernames from Author
  * @returns {string} payload.title - title of tenant
  * @returns {string} payload.logo - logo url
+ * @returns {string[]} payload.usernames[] - admin usernames from Author
+ * @returns {string[]} payload.images[] - images to display on status page
  *
  * OR THROWS ISSUES
  *
@@ -246,13 +248,17 @@ app.post("/api/tenant", zValidator("json", tenantSchema), async (c) => {
  * GET /api/services
  *
  * Returns a JSON payload containing all services
- * for a tenant using RAkerman Status.
+ * for a tenant using RAkerman Status in storage format.
  *
  * @returns {string} title - title of tenant
  * @returns {string} logo - logo url
  * @returns {json[]} services - array of services
  *
+ * @returns {string} services[].url - url of service, partial key in KV
  * @returns {string} services[].name - name of service
+ * @returns {string} services[].group - service group (server region, etc)
+ * @returns {string} services[].repo - repository url
+ * @returns {boolean} services[].is_maintain - is the service in maintenance mode
  */
 app.get("/api/services", async (c) => {
   // Fetch tenant from KV and verify
@@ -279,10 +285,63 @@ app.get("/api/services", async (c) => {
 });
 
 /*
- * GET /api/service
+ * GET /api/services/cached
+ *
+ * Returns a JSON payload containing all services
+ * for a tenant using RAkerman Status in cached format.
+ *
+ * @returns {string} title - title of tenant
+ * @returns {string} logo - logo url
+ * @returns {json[]} services - array of services
+ *
+ * @returns {string} services[].url - url of service, partial key in KV
+ * @returns {string} services[].name - name of service
+ * @returns {string} services[].group - service group (server region, etc)
+ * @returns {string} services[].repo - repository url
+ * @returns {boolean} services[].is_maintain - is the service in maintenance mode
+ * @returns {boolean} services[].is_up - is the service up/online
+ * @returns {string} services[].last_up - last time the service was up, JS Date
+ * @returns {string} services[].last_down - last time the service was down, JS Date
+ * @returns {string} services[].trip_time - round trip time to ping service, in ms
+ * @returns {string} services[].last_err_code - last error code from ping on last down
  */
-app.get("/api/service", async (c) => {
-  return c.text("Broken route", 418);
+app.get("/api/services/cached", async (c) => {
+  // Fetch from cache and return
+  return c.json(
+    await c.env.CACHED.get(c.req.headers.get("host") || "", {
+      type: "json",
+    })
+  );
+});
+
+/*
+ * GET /api/service/:domain
+ *
+ * Returns a JSON payload containing a single service
+ * for a tenant using RAkerman Status.
+ *
+ * @returns {json} payload - service
+ *
+ * @returns {string} payload.url - url of service, partial key in KV
+ * @returns {string} payload.name - name of service
+ * @returns {string} payload.group - service group (server region, etc)
+ * @returns {string} payload.repo - repository url
+ * @returns {boolean} payload.is_maintain - is the service in maintenance mode
+ */
+app.get("/api/service/:domain", async (c) => {
+  const domain = c.req.param("domain");
+
+  // Fetch tenant from KV and verify
+  const tenant = await c.env.TENANTS.get(c.req.headers.get("host") || "", {
+    type: "json",
+  });
+  if (tenant === null) return c.text("Tenant is not registered", 401);
+  // Fetch all services
+  const service = await c.env.SERVICES.get(tenant.domain + ":" + domain, {
+    type: "json",
+  });
+  // Return
+  return c.json(service);
 });
 
 /*
@@ -327,10 +386,17 @@ app.post("/api/service", zValidator("json", serviceSchema), async (c) => {
   // Enforce author validations
   if (!authorUser.complete) return c.text("User is not complete", 401);
   // Fetch tenant from KV and verify
-  const tenant = await c.env.TENANTS.get(c.req.headers.get("host") || "", {
-    type: "json",
-  });
+  const tenant = tenantSchema.parse(
+    await c.env.TENANTS.get(c.req.headers.get("host") || "", {
+      type: "json",
+    })
+  );
   if (tenant === null) return c.text("Tenant is not registered", 401);
+  if (!tenant.usernames.includes(authorUser.email))
+    return c.text(
+      "User is not authorized to create services on this tenant",
+      401
+    );
   // Check for existing service
   const service = await c.env.SERVICES.get(tenant.domain + ":" + body.url, {
     type: "json",
@@ -366,43 +432,8 @@ app.post("/api/service", zValidator("json", serviceSchema), async (c) => {
  * @returns {json} - service
  */
 app.put("/api/service", async (c) => {
-  return c.text("Broken route", 418);
-});
-
-/*
- * GET /api/images
- *
- * Gets and returns a JSON payload containing
- * an array of images to display in the UI, from IMAGES KV.
- *
- * @returns {json} - [] of image urls
- */
-app.get("/api/images", async (c) => {
-  const username = await c.env.TENANTS.get(c.req.url, {
-    type: "text",
-    cacheTtl: 60 * 60 * 24, // 1 day, rare writes
-  });
-
-  if (username === null)
-    return c.text("Source URL not linked to an Author account", 404);
-
-  return c.json(
-    await c.env.IMAGES.get(username, {
-      type: "json",
-    })
-  );
-});
-
-/*
- * PUT /api/images
- *
- * Gets and returns a JSON payload containing
- * the editable portion of the service's data.
- * Must be authenticated through Author to access.
- *
- * @returns {json} - service
- */
-app.put("/api/images", async (c) => {
+  // if (tenant.usernames.includes(authorUser.username))
+  //   return c.text("User is not authorized to edit this tenant", 401);
   return c.text("Broken route", 418);
 });
 
